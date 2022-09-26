@@ -1,0 +1,8 @@
+{% include 'base.html' %}
+
+{% block content %}
+    {% for data in datas %}
+        {{ data.device }}
+    {% endfor %}
+
+{% endblock %}
