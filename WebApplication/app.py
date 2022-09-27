@@ -18,17 +18,17 @@ def main():
     conn.close()
     return render_template('index.html', scenes=scenes)
 
-@app.route("/<device>")
-def action(device):
+@app.route("/<scene>")
+def scene(scene):
     conn = get_db_connection()
-    datas = conn.execute("select  device.label as 'device', scene.label as 'scene' from device, scene inner join scene_device sd on device.id = sd.device_id inner join scene s on s.id = sd.scene_id where scene.label = ?", (device, )).fetchall()
+    datas = conn.execute("select  device.label as 'device', scene.label as 'scene' from device, scene inner join scene_device sd on device.id = sd.device_id inner join scene s on s.id = sd.scene_id where scene.label = ?", (scene, )).fetchall()
     return render_template('device.html', datas=datas)
-"""""
-@app.route("/<device>/<type>")
-def action(type):
+
+@app.route("/<scene>/<device>")
+def device(scene, device):
     conn = get_db_connection()
-    datas = conn.execute("select  device.label as 'device', scene.label as 'scene' from device, scene inner join scene_device sd on device.id = sd.device_id inner join scene s on s.id = sd.scene_id where scene.label = ?", (type, )).fetchall()
-    return render_template('device.html', datas=datas)
-"""
+    #datas = conn.execute("select * from device where label = ?", (type, )).fetchall()
+    return device
+
 if __name__ == '__main__':
     app.run()
