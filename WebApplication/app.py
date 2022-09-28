@@ -4,6 +4,14 @@ from flask import Flask, render_template, request
 
 app = Flask(__name__)
 
+mqttc = mqtt.Client()
+mqttc.connect("192.168.0.15", 1883, 60)
+mqttc.loop_start()
+
+"""
+je potřeba dodělat CRUD funkce,
+
+"""
 
 def get_db_connection():
     ## dodělat ošetření
@@ -11,24 +19,60 @@ def get_db_connection():
     conn.row_factory = sqlite3.Row
     return conn
 
+
 @app.route("/")
 def main():
-    conn = get_db_connection()
-    scenes = conn.execute("select * from scene").fetchall()
-    conn.close()
-    return render_template('index.html', scenes=scenes)
+    template_data = {
+        'scenes': False,
+    }
+    try:
+        conn = get_db_connection()
+        scenes = conn.execute("select * from scene").fetchall()
+        conn.close()
+        template_data['scenes'] = scenes
+    except:
+        pass
 
-@app.route("/<scene>")
+    return render_template('index.html', **template_data)
+
+
+@app.route("/<scene>/")
 def scene(scene):
-    conn = get_db_connection()
-    datas = conn.execute("select  device.label as 'device', scene.label as 'scene' from device, scene inner join scene_device sd on device.id = sd.device_id inner join scene s on s.id = sd.scene_id where scene.label = ?", (scene, )).fetchall()
-    return render_template('device.html', datas=datas)
+    template_data = {
+        'datas': False,
+        'label': scene
+    }
+    try:
+        conn = get_db_connection()
+        datas = conn.execute(
+            "select d.label, d.device_topic, d.is_active, d.identifier FROM device d JOIN scene_device sd ON d.id = sd.device_id JOIN scene s ON s.id = sd.scene_id WHERE s.scene_topic = ?",
+            (scene+"/",)).fetchall()
+        template_data['datas'] = datas
+    except:
+        pass
 
-@app.route("/<scene>/<device>")
-def device(scene, device):
+    return render_template('scene.html', **template_data)
+
+
+@app.route("/<scene>/<device>/<action>")
+def device(scene, device, action):
     conn = get_db_connection()
-    #datas = conn.execute("select * from device where label = ?", (type, )).fetchall()
-    return device
+    rest_topic = conn.execute("select identifier from device where device.device_topic = ?", (device+"/",)).fetchall()
+    end_topic = ""
+    for topic in rest_topic:
+        end_topic = ' '.join(topic)
+    try:
+
+        if action == "1":
+            mqttc.publish(scene+"/"+device+"/"+end_topic + "command", "on")
+        if action == "0":
+            mqttc.publish(scene+"/"+device+"/"+end_topic + "command", "off")
+
+        return scene+"/"+device+"/"+end_topic + "command"
+
+    except:
+        return "error"
+
 
 if __name__ == '__main__':
-    app.run()
+    app.run(host='0.0.0.0', port=5000, debug=True)

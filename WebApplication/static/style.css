@@ -1,0 +1,23 @@
+* {
+    box-sizing: border-box;
+
+  }
+
+  body {
+    margin: 0;
+    font-family: Helvetica, Sans-Serif;
+    background-color: #121212;
+    color: white;
+  }
+
+  .text-header{
+    font-size: 2.875em;
+  }
+
+  .text-content{
+    font-size: 1.875em;
+  }
+  .bottom-line{
+    border-bottom-style: solid;
+    border-bottom-color: white;
+  }

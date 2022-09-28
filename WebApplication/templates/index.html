@@ -1,8 +1,10 @@
 {% include 'base.html' %}
 
-{% block content %}
-    {% for scene in scenes %}
-        <a href="{{ scene['label'] }}"><h2>{{ scene['label'] }}</h2></a>
-    {% endfor %}
+{% block header %}Header{% endblock %}
 
+{% block content %}
+
+    {% for scene in scenes %}
+        <a href="{{ scene['scene_topic'] }}"><h2>{{ scene['label'] }}</h2></a>
+    {% endfor %}
 {% endblock %}

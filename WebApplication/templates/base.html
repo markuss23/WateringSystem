@@ -1,11 +1,19 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
     <title>Title</title>
 </head>
 <body>
-{% block content %}
-{% endblock %}
+
+<header>
+    <div class="bottom-line">
+        <h1 class="text-header">{% block header %}{% endblock %}</h1>
+    </div>
+</header>
+
+{% block content %} {% endblock %}
 </body>
 </html>
