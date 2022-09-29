@@ -1,0 +1,16 @@
+{% include 'base.html' %}
+
+{% block header %}
+    {% for data in datas %}
+        {{ data.label }}
+    {% endfor %}
+{% endblock %}
+
+{% block content %}
+
+    {% for data in datas %}
+        {{ data.device_topic }}
+        {{ data.identifier }}
+    {% endfor %}
+
+{% endblock %}
