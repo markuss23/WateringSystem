@@ -12,8 +12,8 @@ mqttc.loop_start()
 """
 """
 je potřeba dodělat CRUD funkce,
+"""""
 
-"""
 
 
 def get_db_connection():
