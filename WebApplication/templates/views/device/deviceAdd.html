@@ -1,0 +1,28 @@
+{% extends 'base.html' %}
+
+{% block title %}Přidání zařízení{% endblock %}
+
+{% block content %}
+    <form method="post">
+            <label for="label">Název zařízení</label>
+            <input name="label" id="label" required>
+
+            <label for="device_topic">adresa zařízení</label>
+            <input name="device_topic" id="device_topic" required>
+
+            <label for="is_active">Je aktivní?</label><br>
+            <input type="checkbox" id="is_active" name="is_active">
+
+            <select name="types" class="">
+              {% for o in types %}
+              <option value="{{ o.id }}">{{ o.label }}</option>
+              {% endfor %}
+            </select>
+
+            <label for="pin">Pin zařízení</label>
+            <input type="number" name="pin" id="pin" required>
+
+            <input type="submit" value="Přidat">
+    </form>
+
+{% endblock %}
