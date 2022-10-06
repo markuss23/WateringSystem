@@ -66,25 +66,68 @@ def device(scene, device):
     try:
         conn = get_db_connection()
         datas = conn.execute("select * from device as d where d.device_topic = ?",
-                             (device + "/", )).fetchall()
+                             (device + "/",)).fetchall()
         template_data['datas'] = datas
     except:
         pass
     return render_template('device.html', **template_data)
 
 
-@app.route("/<scene>/<device>/<action>")
-def action(scene, device, action):
-    print(type(action))
+@app.route("/<scene>/edit/", methods=('GET', 'POST'))
+def editScene(scene):
     conn = get_db_connection()
+    template_data = {
+        'datas': False,
+        'label': scene
+    }
+
     try:
-        rest_topic = conn.execute("select identifier from device where device.device_topic = ?",
-                                  (device + "/",)).fetchall()
-        end_topic = ""
-        for topic in rest_topic:
-            end_topic = ' '.join(topic)
+        if request.method == 'POST':
+            label = request.form['label']
+            scene_topic = request.form['scene_topic']
+            is_active = request.form.get('is_active')
+            if  is_active is None:
+                is_active = 0
+            else:
+                is_active = 1
+            try:
+                conn.execute("UPDATE scene SET label = ?, scene_topic = ?, is_active = ? WHERE scene.scene_topic = ?",
+                             (label, scene_topic, is_active, scene+"/"))
+                conn.commit()
+            except:
+                return "chyba při aktualizaci"
     except:
         pass
+
+    try:
+        datas = conn.execute("select * from scene as s where s.scene_topic = ?",
+                             (scene + "/",)).fetchall()
+        template_data['datas'] = datas
+    except:
+        pass
+
+    return render_template('views/scene/sceneEdit.html', **template_data)
+
+
+@app.route("/<scene>/<device>/<action>")
+def action(scene, device, action):
+    conn = get_db_connection()
+    try:
+        command = conn.execute("select identifier, label from device where device.device_topic = ?",
+                               (device + "/",)).fetchall()
+        for split in command:
+            help = (' '.join(split)).split(" ")
+
+        command = conn.execute(
+            "select label from type where type.id = (select device.type_id from device where device.label = ?)",
+            (help[1],)).fetchall()
+        for split in command:
+            number = (' '.join(split)).split(" ")
+
+    except:
+        print("error")
+        pass
+
     try:
         """""
         if action == "1":
@@ -92,7 +135,7 @@ def action(scene, device, action):
         if action == "0":
             mqttc.publish(scene+"/"+device+"/"+end_topic + "command", "off")
         """
-        return scene + "/" + device + "/" + end_topic + "command"
+        return scene + "/" + device + "/" + number[0] + help[0] + "command"
 
     except:
         pass

@@ -1,6 +1,6 @@
-{% include 'base.html' %}
+{% extends 'base.html' %}
 
-{% block header %}
+{% block title %}
     {% for data in datas %}
         {{ data.label }}
     {% endfor %}
