@@ -1,0 +1,19 @@
+{% extends 'base.html' %}
+
+{% block title %}Přidání scény{% endblock %}
+
+{% block content %}
+    <form method="post">
+            <label for="label">Název scény</label>
+            <input name="label" id="label">
+
+            <label for="scene_topic">adresa scény</label>
+            <input name="scene_topic" id="scene_topic" required>
+
+            <label for="is_active">Je aktivní?</label><br>
+            <input type="checkbox" id="is_active" name="is_active">
+
+            <input type="submit" value="Přidat">
+    </form>
+
+{% endblock %}

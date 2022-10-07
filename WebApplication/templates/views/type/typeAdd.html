@@ -1,0 +1,34 @@
+{% extends 'base.html' %}
+
+{% block title %}Přidání Typu{% endblock %}
+
+{% block content %}
+    <form method="post">
+            <label for="label">Název scény</label>
+            <input name="label" id="label">
+
+            <label for="typ">Typ input / output</label>
+            <input name="typ" id="typ">
+
+            <label for="jednotka">Jednotka</label>
+            <input name="jednotka" id="jednotka">
+
+            <label for="min">Minimální</label>
+            <input type="number" name="min" id="min">
+
+            <label for="max">Maximální</label>
+            <input type="number" name="max" id="max">
+
+            <label for="interval">Interval zmeny</label>
+            <input type="number" name="interval" id="interval">
+
+            <label for="type_topic">adresa typu</label>
+            <input name="type_topic" id="type_topic" required>
+
+            <label for="is_active">Je aktivní?</label><br>
+            <input type="checkbox" id="is_active" name="is_active">
+
+            <input type="submit" value="Přidat">
+    </form>
+
+{% endblock %}
