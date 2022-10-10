@@ -13,9 +13,7 @@
         <h1 class="text-header">{% block title %}{% endblock %}</h1>
     </div>
 </header>
-{% for message in get_flashed_messages() %}
-        <div class="flash">{{ message }}</div>
-    {% endfor %}
+
 {% block content %} {% endblock %}
 </body>
 </html>

@@ -1,3 +1,5 @@
+import views
+
 import paho.mqtt.client as mqtt
 import sqlite3
 
@@ -44,92 +46,7 @@ def add():
     return "nabídka přidání věcí"
 
 
-@app.route("/add/scene", methods=('POST', 'GET'))
-def add_scene():
-    try:
-        if request.method == 'POST':
-            label = request.form['label']
-            scene_topic = request.form['scene_topic']
-            is_active = request.form.get('is_active')
-            conn = get_db_connection()
-            if is_active is None:
-                is_active = 0
-            else:
-                is_active = 1
-            if scene_topic[-1] != "/":
-                scene_topic = scene_topic + "/"
-            error = None
-
-            if not label:
-                error = 'Název scény chybí'
-            if not scene_topic:
-                error = 'Adresa chybí'
-
-            if error is None:
-                try:
-                    conn.execute("INSERT INTO scene VALUES (NULL,?,?,?)",
-                                 (label, scene_topic, is_active))
-                    conn.commit()
-                except conn.IntegrityError:
-                    error = f" Tato adresa již existuje "
-                else:
-                    return redirect('/')
-            flash(error)
-    except:
-        pass
-
-    return render_template('views/scene/sceneAdd.html')
-
-
-@app.route("/add/device", methods=('POST', 'GET'))
-def add_device():
-    template_data = {
-        'types': False,
-    }
-    conn = get_db_connection()
-
-    types = conn.execute("select * from type")
-    template_data['types'] = types
-
-    try:
-        if request.method == 'POST':
-            label = request.form['label']
-            device_topic = request.form['device_topic']
-            is_active = request.form.get('is_active')
-            select = request.form.get('types')
-            pin = request.form['pin']
-
-            if is_active is None:
-                is_active = 0
-            else:
-                is_active = 1
-            if device_topic[-1] != "/":
-                device_topic = device_topic + "/"
-            error = None
-
-            if not label:
-                error = 'Název scény chybí'
-            if not device_topic:
-                error = 'Adresa chybí'
-            if not pin:
-                error = 'Pin chybí'
-
-            if error is None:
-                try:
-                    conn.execute("INSERT INTO device VALUES (NULL,?,?,?,?,?)",
-                                 (select, label, device_topic, is_active, pin+'/'))
-                    conn.commit()
-                except conn.IntegrityError:
-                    error = f" Tato adresa již existuje "
-                else:
-                    return redirect('/')
-            flash(error)
-    except:
-        pass
-
-    return render_template('views/device/deviceAdd.html', **template_data)
-
-@app.route("/add/typ", methods=('POST', 'GET'))
+@app.route("/types/add/", methods=('POST', 'GET'))
 def add_typ():
     try:
         if request.method == 'POST':
@@ -171,48 +88,92 @@ def add_typ():
     except:
         pass
 
-    return render_template('views/type/typeAdd.html')
+    return render_template('type/typeAdd.html')
 
-@app.route("/<scene>/")
-def scene(scene):
-    template_data = {
-        'datas': False,
-        'label': scene
-    }
+
+@app.route("/scenes/add/", methods=('POST', 'GET'))
+def add_scene():
     try:
-        conn = get_db_connection()
-        datas = conn.execute(
-            "select d.label, d.device_topic, d.is_active, d.pin FROM device d JOIN scene_device sd ON d.id = sd.device_id JOIN scene s ON s.id = sd.scene_id WHERE s.scene_topic = ?",
-            (scene + "/",)).fetchall()
-        template_data['datas'] = datas
+        if request.method == 'POST':
+            label = request.form['label']
+            scene_topic = request.form['scene_topic']
+            is_active = request.form.get('is_active')
+            conn = get_db_connection()
+            if is_active is None:
+                is_active = 0
+            else:
+                is_active = 1
+            if scene_topic[-1] != "/":
+                scene_topic = scene_topic + "/"
+            error = None
+
+            if not label:
+                error = 'Název scény chybí'
+            if not scene_topic:
+                error = 'Adresa chybí'
+
+            if error is None:
+                try:
+                    conn.execute("INSERT INTO scene VALUES (NULL,?,?,?)",
+                                 (label, scene_topic, is_active))
+                    conn.commit()
+                except conn.IntegrityError:
+                    error = f" Tato adresa již existuje "
+                else:
+                    return redirect('/')
+            flash(error)
     except:
         pass
 
-    return render_template('scene.html', **template_data)
+    return render_template('scene/sceneAdd.html')
 
 
-@app.route("/<scene>/<device>/")
-def device(scene, device):
+@app.route("/scenes/")
+def scenes():
     template_data = {
-        'datas': False,
-        'label': device
+        'scenes': False,
+        'label': 'Výpis všech scén'
     }
     try:
         conn = get_db_connection()
-        datas = conn.execute("select * from device as d where d.device_topic = ?",
-                             (device + "/",)).fetchall()
-        template_data['datas'] = datas
+        scenes = conn.execute("select * from scene").fetchall()
+        conn.close()
+        template_data['scenes'] = scenes
     except:
         pass
-    return render_template('device.html', **template_data)
+    return render_template('scene/sceneList.html', **template_data)
 
 
-@app.route("/<scene>/edit/", methods=('GET', 'POST'))
-def edit_scene(scene):
+@app.route("/scenes/<int:id>/")
+def scene(id):
+    template_data = {
+        'scenes': False,
+        'devices': False,
+    }
+    try:
+        conn = get_db_connection()
+        scenes = conn.execute(
+            "select * from scene where scene.id = ?",
+            (id,)).fetchall()
+
+        devices = conn.execute(
+            "select d.label, d.device_topic, d.is_active, d.pin FROM device d JOIN scene_device sd ON d.id = sd.device_id JOIN scene s ON s.id = sd.scene_id WHERE s.id=?;",
+            (id,)).fetchall()
+
+        template_data['scenes'] = scenes
+        template_data['devices'] = devices
+
+    except:
+        pass
+
+    return render_template('scene/sceneDetail.html', **template_data)
+
+
+@app.route("/scenes/<int:id>/edit/", methods=('GET', 'POST'))
+def edit_scene(id):
     conn = get_db_connection()
     template_data = {
         'datas': False,
-        'label': scene
     }
 
     try:
@@ -235,8 +196,8 @@ def edit_scene(scene):
             if error is None:
                 try:
                     conn.execute(
-                        "UPDATE scene SET label = ?, scene_topic = ?, is_active = ? WHERE scene.scene_topic = ?",
-                        (label, scene_topic, is_active, scene + "/"))
+                        "UPDATE scene SET label = ?, scene_topic = ?, is_active = ? WHERE scene.id = ?",
+                        (label, scene_topic, is_active, id))
                     conn.commit()
                 except error:
                     error = "chyba při zapsání do Databáze"
@@ -247,13 +208,105 @@ def edit_scene(scene):
         pass
 
     try:
-        datas = conn.execute("select * from scene as s where s.scene_topic = ?",
-                             (scene + "/",)).fetchall()
+        datas = conn.execute("select * from scene as s where s.id = ?",
+                             (id,)).fetchall()
         template_data['datas'] = datas
     except:
         pass
 
-    return render_template('views/scene/sceneEdit.html', **template_data)
+    return render_template('scene/sceneEdit.html', **template_data)
+
+
+# -----------------------------------
+
+
+@app.route("/devices/add/", methods=('POST', 'GET'))
+def add_device():
+    template_data = {
+        'types': False,
+    }
+    conn = get_db_connection()
+
+    types = conn.execute("select * from type")
+    template_data['types'] = types
+
+    try:
+        if request.method == 'POST':
+            label = request.form['label']
+            device_topic = request.form['device_topic']
+            is_active = request.form.get('is_active')
+            select = request.form.get('types')
+            pin = request.form['pin']
+
+            if is_active is None:
+                is_active = 0
+            else:
+                is_active = 1
+            if device_topic[-1] != "/":
+                device_topic = device_topic + "/"
+            error = None
+
+            if not label:
+                error = 'Název scény chybí'
+            if not device_topic:
+                error = 'Adresa chybí'
+            if not pin:
+                error = 'Pin chybí'
+
+            if error is None:
+                try:
+                    conn.execute("INSERT INTO device VALUES (NULL,?,?,?,?,?)",
+                                 (select, label, device_topic, is_active, pin + '/'))
+                    conn.commit()
+                except conn.IntegrityError:
+                    error = f" Tato adresa již existuje "
+                else:
+                    return redirect('/')
+            flash(error)
+    except:
+        pass
+
+    return render_template('device/deviceAdd.html', **template_data)
+
+
+@app.route("/devices/")
+def devices():
+    template_data = {
+        'devices': False,
+        'label': 'Výpis všech zařízení'
+    }
+    try:
+        conn = get_db_connection()
+        devices = conn.execute("select * from device").fetchall()
+        conn.close()
+        template_data['devices'] = devices
+    except:
+        pass
+    return render_template('device/deviceList.html', **template_data)
+
+
+@app.route("/devices/<int:id>/")
+def device(id):
+    template_data = {
+        'devices': False,
+        'scenes': False,
+    }
+    try:
+        conn = get_db_connection()
+        devices = conn.execute(
+            "select * from device where device.id = ?",
+            (id,)).fetchall()
+
+        scenes = conn.execute(
+            "select s.id, s.label, s.scene_topic, s.is_active from scene s join scene_device sd on s.id = sd.scene_id join device d on d.id = sd.device_id where d.id=?;",
+            (id,)).fetchall()
+
+        template_data['devices'] = devices
+        template_data['scenes'] = scenes
+    except:
+        pass
+
+    return render_template('device/deviceDetail.html', **template_data)
 
 
 @app.route("/<scene>/<device>/<action>")
@@ -287,6 +340,8 @@ def action(scene, device, action):
     except:
         pass
 
+
+#app.add_url_rule('/asd/<int:id>/', view_func=views.test)
 
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=5000, debug=True)

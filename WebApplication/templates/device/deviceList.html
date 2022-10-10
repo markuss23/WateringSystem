@@ -1,0 +1,17 @@
+{% extends 'base.html' %}
+
+
+{% block title %}
+    {% if label %}
+        {{ label }}
+    {% endif %}
+{% endblock %}
+
+{% block content %}
+
+    {% if devices %}
+        {% for device in devices %}
+            <a href="{{ device.id }}"><h2>{{ device['label'] }}</h2></a>
+        {% endfor %}
+    {% endif %}
+{% endblock %}

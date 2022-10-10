@@ -3,8 +3,7 @@
 {% block title %}Header{% endblock %}
 
 {% block content %}
-
     {% for scene in scenes %}
-        <a href="{{ scene['scene_topic'] }}"><h2>{{ scene['label'] }}</h2></a>
+        <a href="scenes/{{ scene['id'] }}"><h2>{{ scene['label'] }}</h2></a>
     {% endfor %}
 {% endblock %}
