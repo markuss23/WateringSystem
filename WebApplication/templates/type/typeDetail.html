@@ -2,20 +2,21 @@
 
 
 {% block title %}
-    {% if scenes %}
-        {% for scene in scenes %}
-            {{ scene.label }}
+    {% if types %}
+        {% for type in types %}
+            {{ type.label }}
         {% endfor %}
     {% endif %}
 {% endblock %}
 
 {% block content %}
 
-    {% if scenes %}
-        {% for scene in scenes %}
-            <p>{{ scene.is_active }}</p>
-            <p>{{ scene.scene_topic }}</p>
+    {% if types %}
+        {% for type in types %}
+            <p>{{ type.typ }}</p>
+            <p>{{ type.jednotka }}</p>
         {% endfor %}
+
     {% endif %}
 
     {% if devices %}

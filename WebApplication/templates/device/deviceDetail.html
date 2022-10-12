@@ -25,4 +25,11 @@
         {% endfor %}
     {% endif %}
 
+    {% if types %}
+        <hr />
+        {% for type in types %}
+            <a href="/types/{{ type.id }}/"><h2>{{ type['label'] }}</h2></a>
+        {% endfor %}
+    {% endif %}
+
 {% endblock %}

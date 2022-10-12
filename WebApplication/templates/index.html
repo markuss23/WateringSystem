@@ -3,6 +3,7 @@
 {% block title %}Header{% endblock %}
 
 {% block content %}
+    {{ g.user['is_supervisor'] }}
     {% for scene in scenes %}
         <a href="scenes/{{ scene['id'] }}"><h2>{{ scene['label'] }}</h2></a>
     {% endfor %}
