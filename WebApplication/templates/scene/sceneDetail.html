@@ -1,0 +1,29 @@
+{% extends 'base.html' %}
+
+
+{% block title %}
+    {% if scenes %}
+        {% for scene in scenes %}
+            {{ scene.label }}
+        {% endfor %}
+    {% endif %}
+{% endblock %}
+
+{% block content %}
+
+    {% if scenes %}
+        {% for scene in scenes %}
+            <p>{{ scene.is_active }}</p>
+            <p>{{ scene.scene_topic }}</p>
+        {% endfor %}
+    {% endif %}
+
+    {% if devices %}
+        <br />
+        {% for device in devices %}
+            <a href="/devices/{{ device.id }}/"><h2>{{ device['label'] }}</h2></a>
+            <hr />
+        {% endfor %}
+    {% endif %}
+
+{% endblock %}

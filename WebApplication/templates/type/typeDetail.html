@@ -1,0 +1,30 @@
+{% extends 'base.html' %}
+
+
+{% block title %}
+    {% if types %}
+        {% for type in types %}
+            {{ type.label }}
+        {% endfor %}
+    {% endif %}
+{% endblock %}
+
+{% block content %}
+
+    {% if types %}
+        {% for type in types %}
+            <p>{{ type.typ }}</p>
+            <p>{{ type.jednotka }}</p>
+        {% endfor %}
+
+    {% endif %}
+
+    {% if devices %}
+        <br />
+        {% for device in devices %}
+            <a href="/devices/{{ device.id }}/"><h2>{{ device['label'] }}</h2></a>
+            <hr />
+        {% endfor %}
+    {% endif %}
+
+{% endblock %}

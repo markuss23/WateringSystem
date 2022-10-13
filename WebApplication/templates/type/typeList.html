@@ -1,0 +1,17 @@
+{% extends 'base.html' %}
+
+
+{% block title %}
+    {% if label %}
+        {{ label }}
+    {% endif %}
+{% endblock %}
+
+{% block content %}
+
+    {% if types %}
+        {% for type in types %}
+            <a href="{{ type.id }}"><h2>{{ type['label'] }}</h2></a>
+        {% endfor %}
+    {% endif %}
+{% endblock %}

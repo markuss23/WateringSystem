@@ -1,0 +1,23 @@
+{% extends 'base.html' %}
+
+{% block title %}Přidání uživatele{% endblock %}
+
+{% block content %}
+  <form method="post">
+      <label for="username">Uživatelské jméno</label>
+      <input name="username" id="username" required>
+      <br />
+      <label for="pin">Pin</label>
+      <input type="number" name="1" id="1" required>
+      <input type="number" name="2" id="2" required>
+      <input type="number" name="3" id="3" required>
+      <input type="number" name="4" id="4" required>
+      <br />
+      <label for="pin">Kontrola Pinu</label>
+      <input type="number" name="11" id="1" required>
+      <input type="number" name="12" id="2" required>
+      <input type="number" name="13" id="3" required>
+      <input type="number" name="14" id="4" required>
+    <input type="submit" value="Přidat">
+  </form>
+{% endblock %}
