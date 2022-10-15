@@ -15,34 +15,17 @@ def load_logged_in_user():
     views.load_logged_in_user()
 
 
+@app.errorhandler(404)
+def page_not_found(e):
+    return redirect('/')
+
+
 """""
 mqttc = mqtt.Client()
 mqttc.connect("192.168.0.15", 1883, 60)
 mqttc.loop_start()
-"""
-"""
+
 je potřeba dodělat CRUD funkce,
-
-"""
-
-
-def get_db_connection():
-    ## dodělat ošetření
-    conn = sqlite3.connect('db.sqlite')
-    conn.row_factory = sqlite3.Row
-    return conn
-
-
-@app.route("/add/")
-def add():
-    return "nabídka přidání věcí"
-
-
-
-
-
-# -----------------------------------
-
 
 @app.route("/<scene>/<device>/<action>")
 def action(scene, device, action):
@@ -64,17 +47,17 @@ def action(scene, device, action):
         pass
 
     try:
-        """""
+
         if action == "1":
             mqttc.publish(scene+"/"+device+"/"+end_topic + "command", "on")
         if action == "0":
             mqttc.publish(scene+"/"+device+"/"+end_topic + "command", "off")
-        """
+
         return scene + "/" + device + "/" + number[0] + help[0] + "command"
 
     except:
         pass
-
+"""
 
 app.add_url_rule('/', view_func=views.main)
 

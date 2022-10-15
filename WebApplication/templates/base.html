@@ -10,10 +10,18 @@
 
 <header>
     <div class="bottom-line">
-        <h1 class="text-header">{% block title %}{% endblock %}</h1>
+        <div class="container">
+            <div class="row">
+                <div class="col">
+                    <div>
+                        <h1 class="text-header">{% block title %}{% endblock %}</h1>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
     </div>
 </header>
-
 {% block content %} {% endblock %}
 </body>
 </html>
