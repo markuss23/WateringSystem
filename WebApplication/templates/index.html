@@ -3,18 +3,27 @@
 {% block title %}Header{% endblock %}
 
 {% block content %}
-
     <div class="container">
         <div class="row">
             {% if scenes %}
                 {% for scene in scenes %}
-                     <div class="col-12 bg-components my-3">
-                        <a href="scenes/{{ scene['id'] }}"><h2>{{ scene['label'] }}</h2></a>
-                    </div>
+                    {% if g.user['is_supervisor'] == 1 %}
+                        <div class="col-10 bg-components my-3 p-4">
+                            <a href="scenes/{{ scene.id }}">{{ scene.label }}</a>
+                        </div>
+                        <div class="col-1 bg-components  my-3 p-3">
+                            <a href="scenes/{{ scene.id }}/edit/"><button class="btn btn-primary">Edit</button></a>
+                        </div>
+                        <div class="col-1 bg-components my-3 p-3 ">
+                            <a href=""><button class="btn btn-delete">Delete</button></a>
+                        </div>
+                    {% else %}
+                        <div class="col-12 bg-components my-3 p-4">
+                            <a href="scenes/{{ scene.id }}">{{ scene.label }}</a>
+                        </div>
+                    {% endif %} 
                 {% endfor %}
             {% endif %}
         </div>
     </div>
-    {{ g.user['is_supervisor'] }}
-
 {% endblock %}
