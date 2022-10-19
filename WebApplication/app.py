@@ -71,7 +71,7 @@ app.add_url_rule('/user/logout/', view_func=views.user_logout)
 
 app.add_url_rule('/scenes/', view_func=views.scenes)
 app.add_url_rule('/scenes/<int:id>/', view_func=views.scene)
-app.add_url_rule('/scenes/<int:id>/edit/', view_func=views.scenes_edit)
+app.add_url_rule('/scenes/<int:id>/edit/', view_func=views.scenes_edit, methods=("POST", "GET"))
 app.add_url_rule('/scenes/add/', view_func=views.scenes_add, methods=("POST", "GET"))
 
 # -------------
