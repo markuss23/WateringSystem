@@ -230,6 +230,7 @@ def scenes_edit(id):
 
     try:
         if request.method == 'POST':
+
             label = request.form['label']
             scene_topic = request.form['scene_topic']
             is_active = request.form.get('is_active')
@@ -254,7 +255,7 @@ def scenes_edit(id):
                 except error:
                     error = "chyba při zapsání do Databáze"
                 else:
-                    redirect('/')
+                    return redirect('/')
             flash(error)
     except:
         pass

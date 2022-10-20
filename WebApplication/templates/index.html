@@ -3,18 +3,56 @@
 {% block title %}Header{% endblock %}
 
 {% block content %}
-
     <div class="container">
+        <div class="col-12 my-5 no-gutters">
+            <div class="row">
+                <div class="col-4">
+                    <div class="card p-4 bg-components" style="width: 18rem;">
+                        <div class="card-body text-center">
+                            <a href="{{ url_for('scenes') }}"> Výpis všech scén</a>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-4">
+                    <div class="card p-4 bg-components" style="width: 18rem;">
+                        <div class="card-body text-center">
+                            <a href="{{ url_for('devices') }}"> Výpis všech zařízení</a>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-4">
+                    <div class="card p-4 bg-components" style="width: 18rem;">
+                        <div class="card-body text-center">
+                            <a href="{{ url_for('types') }}"> Výpis všech typů</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
         <div class="row">
             {% if scenes %}
                 {% for scene in scenes %}
-                     <div class="col-12 bg-components my-3">
-                        <a href="scenes/{{ scene['id'] }}"><h2>{{ scene['label'] }}</h2></a>
-                    </div>
+                    {% if g.user['is_supervisor'] == 1 %}
+                        <div class="col-8 bg-components my-3 p-4">
+                            <a href="scenes/{{ scene.id }}">{{ scene.label }}</a>
+                        </div>
+                        <div class="col-2 bg-components  my-3 p-3">
+                            <a href="scenes/{{ scene.id }}/edit/">
+                                <button class="btn btn-primary">Edit</button>
+                            </a>
+                        </div>
+                        <div class="col-2 bg-components my-3 p-3 ">
+                            <a href="">
+                                <button class="btn btn-delete">Delete</button>
+                            </a>
+                        </div>
+                    {% else %}
+                        <div class="col-12 bg-components my-3 p-4">
+                            <a href="scenes/{{ scene.id }}">{{ scene.label }}</a>
+                        </div>
+                    {% endif %}
                 {% endfor %}
             {% endif %}
         </div>
     </div>
-    {{ g.user['is_supervisor'] }}
-
 {% endblock %}
