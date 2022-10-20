@@ -29,7 +29,7 @@
                 </div>
             </div>
         </div>
-        <div class="row">
+        <div class="row my-5">
             {% if scenes %}
                 {% for scene in scenes %}
                     {% if g.user['is_supervisor'] == 1 %}
@@ -49,6 +49,32 @@
                     {% else %}
                         <div class="col-12 bg-components my-3 p-4">
                             <a href="scenes/{{ scene.id }}">{{ scene.label }}</a>
+                        </div>
+                    {% endif %}
+                {% endfor %}
+            {% endif %}
+        </div>
+        <hr />
+        <div class="row my-5">
+            {% if devices %}
+                {% for device in devices %}
+                    {% if g.user['is_supervisor'] == 1 %}
+                        <div class="col-8 bg-components my-3 p-4">
+                            <a href="devices/{{ device.id }}">{{ device.label }}</a>
+                        </div>
+                        <div class="col-2 bg-components  my-3 p-3">
+                            <a href="devices/{{ device.id }}/edit/">
+                                <button class="btn btn-primary">Edit</button>
+                            </a>
+                        </div>
+                        <div class="col-2 bg-components my-3 p-3 ">
+                            <a href="">
+                                <button class="btn btn-delete">Delete</button>
+                            </a>
+                        </div>
+                    {% else %}
+                        <div class="col-12 bg-components my-3 p-4">
+                            <a href="devices/{{ device.id }}/">{{ device.label }}</a>
                         </div>
                     {% endif %}
                 {% endfor %}
