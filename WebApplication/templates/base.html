@@ -9,6 +9,16 @@
     <script src="{{ url_for('static', filename='js/jquery.js') }}"></script>
     <script src="{{ url_for('static', filename='js/bootstrap-pincode-input.js') }}"></script>
 
+    <script>
+        $(document).ready(function () {
+            $('#pincode-input1').pincodeInput({
+                hidedigits: false, complete: function (value, e, errorElement) {
+                    console.log(errorElement)
+                }
+            });
+            })
+    </script>
+
     <title>Title</title>
 </head>
 <body>

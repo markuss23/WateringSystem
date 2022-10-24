@@ -19,7 +19,6 @@ def login_required(view):
             return redirect(url_for('user_login'))
 
         return view(**kwargs)
-
     return wrapped_view
 
 
@@ -57,6 +56,7 @@ def user_add():
             elif pin != pin2:
                 error = 'Piny se neshodují'
 
+
             if error is None:
                 try:
                     conn.execute(
@@ -76,21 +76,18 @@ def user_add():
 
 
 def user_login():
-    if request.method == 'POST':
-        numbers = [0, 0, 0, 0]
-        username = request.form['username']
-        numbers[0] = request.form['1']
-        numbers[1] = request.form['2']
-        numbers[2] = request.form['3']
-        numbers[3] = request.form['4']
+    template_data = {
+        'users': False
+    }
 
-        pin = str(numbers[0]) + str(numbers[1]) + str(numbers[2]) + str(numbers[3])
+    if request.method == 'POST':
+        username_id = request.form.get('users')
+        pin = request.form['pin']
         conn = get_db_connection()
         error = None
         user = conn.execute(
-            'SELECT * FROM user WHERE username = ?', (username,)
+            'SELECT * FROM user WHERE id = ?', (username_id,)
         ).fetchone()
-        print(user['pin'])
         if user is None:
             error = 'Incorrect username.'
         elif not check_password_hash(user['pin'], pin):
@@ -102,7 +99,15 @@ def user_login():
             return redirect(url_for('main'))
         flash(error)
 
-    return render_template('auth/userLogin.html')
+    try:
+        conn = get_db_connection()
+        users = conn.execute("select * from user").fetchall()
+        conn.close()
+        template_data['users'] = users
+    except:
+        pass
+
+    return render_template('auth/userLogin.html', **template_data)
 
 
 def user_logout():

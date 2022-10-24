@@ -3,14 +3,36 @@
 {% block title %}Příhlášení{% endblock %}
 
 {% block content %}
-    <form method="post">
-        <label for="username">Uživatelské jméno</label>
-        <input name="username" id="username" required>
-        <label for="pin">Pin</label>
-        <input type="number" name="1" id="1" required>
-        <input type="number" name="2" id="2" required>
-        <input type="number" name="3" id="3" required>
-        <input type="number" name="4" id="4" required>
-        <input type="submit" value="Log In">
-    </form>
+    <div class="container my-5">
+        <div class="row">
+            <div class="col-4"></div>
+            <div class="col-4">
+                <div class="card p-5 bg-components" style="width: 18rem;">
+                    <form method="post">
+                        <div class="card-body text-center">
+                            <label for="username"><strong>Uživatelské jméno</strong></label>
+                        </div>
+                        <div class="card-body text-center">
+                            {% if users %}
+                                <select name="users" class="p-2">
+                                    {% for o in users %}
+                                        <option value="{{ o.id }}">{{ o.username }}</option>
+                                    {% endfor %}
+                                </select>
+                            {% endif %}
+                        </div>
+                        <div class="card-body text-center">
+                            <div>
+                                <input type="text" name="pin" id="pincode-input1">
+                            </div>
+                        </div>
+                        <div class="card-body text-center ">
+                            <input type="submit" value="Log In" class="p-2">
+                        </div>
+                    </form>
+                </div>
+            </div>
+            <div class="col4"></div>
+        </div>
+    </div>
 {% endblock %}
