@@ -1,6 +1,6 @@
-from werkzeug.security import generate_password_hash
+import os
 
-from views import views
+from views import auth
 
 import sqlite3
 
@@ -12,7 +12,7 @@ app.secret_key = "super secret key"
 
 @app.before_request
 def load_logged_in_user():
-    views.load_logged_in_user()
+    auth.load_logged_in_user()
 
 
 @app.errorhandler(404)
@@ -59,32 +59,19 @@ def action(scene, device, action):
         pass
 """
 
-app.add_url_rule('/', view_func=views.main)
+from views import auth
+app.register_blueprint(auth.bp)
 
-# --------------
+from views import scenes
+app.register_blueprint(scenes.bp)
+app.add_url_rule('/', endpoint='scenes.main')
 
-app.add_url_rule('/user/add/', view_func=views.user_add, methods=("POST", "GET"))
-app.add_url_rule('/user/login/', view_func=views.user_login, methods=("POST", "GET"))
-app.add_url_rule('/user/logout/', view_func=views.user_logout)
+from views import devices
+app.register_blueprint(devices.bp)
 
-# -------------
+from views import types
+app.register_blueprint(types.bp)
 
-app.add_url_rule('/scenes/', view_func=views.scenes)
-app.add_url_rule('/scenes/<int:id>/', view_func=views.scene)
-app.add_url_rule('/scenes/<int:id>/edit/', view_func=views.scenes_edit, methods=("POST", "GET"))
-app.add_url_rule('/scenes/add/', view_func=views.scenes_add, methods=("POST", "GET"))
-
-# -------------
-
-app.add_url_rule('/devices/', view_func=views.devices)
-app.add_url_rule('/devices/<int:id>/', view_func=views.device)
-app.add_url_rule('/devices/add/', view_func=views.devices_add, methods=("POST", "GET"))
-
-# ---------------
-
-app.add_url_rule('/types/', view_func=views.types)
-app.add_url_rule('/types/<int:id>/', view_func=views.type)
-app.add_url_rule('/types/add/', view_func=views.types_add, methods=("POST", "GET"))
 
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=5000, debug=True)

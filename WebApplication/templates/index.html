@@ -3,82 +3,64 @@
 {% block title %}Header{% endblock %}
 
 {% block content %}
-    <div class="container">
-        <div class="col-12  my-5">
-            <div class="row">
-                <div class="col-4">
-                    <div class="card p-4 bg-components" style="width: 18rem;">
-                        <div class="card-body text-center">
-                            <a href="{{ url_for('scenes') }}"> Výpis všech scén</a>
+
+    <div class="row my-5">
+        {% if scenes %}
+            {% for scene in scenes %}
+                {% if g.user['is_supervisor'] == 1 %}
+                    <div class="col-lg-12 bg-components my-3 p-3">
+                        <div>
+                                <span>
+                                    <a href="scenes/{{ scene.id }}">{{ scene.label }}</a>
+                                </span>
+                            <span class="float-right ml-4">
+                                    <a href="">
+                                        <button class="btn btn-delete">Delete</button>
+                                    </a>
+                                </span>
+                            <span class="float-right ">
+                                    <a href="scenes/{{ scene.id }}/edit/">
+                                        <button class="btn btn-primary">Edit</button>
+                                    </a>
+                                </span>
                         </div>
                     </div>
-                </div>
-                <div class="col-4">
-                    <div class="card p-4 bg-components " style="width: 18rem;">
-                        <div class="card-body text-center">
-                            <a href="{{ url_for('devices') }}"> Výpis všech zařízení</a>
+                {% else %}
+                    <div class="col-lg-12 bg-components my-3 p-4">
+                        <a href="scenes/{{ scene.id }}">{{ scene.label }}</a>
+                    </div>
+                {% endif %}
+            {% endfor %}
+        {% endif %}
+    </div>
+    <hr/>
+    <div class="row my-5">
+        {% if devices %}
+            {% for device in devices %}
+                {% if g.user['is_supervisor'] == 1 %}
+                    <div class="col-lg-12 bg-components my-3 p-3">
+                        <div>
+                                <span>
+                                    <a href="devices/{{ device.id }}">{{ device.label }}</a>
+                                </span>
+                            <span class="float-right ml-4">
+                                    <a href="">
+                                        <button class="btn btn-delete">Delete</button>
+                                    </a>
+                                </span>
+                            <span class="float-right ">
+                                    <a href="devices/{{ device.id }}/edit/">
+                                        <button class="btn btn-primary">Edit</button>
+                                    </a>
+                                </span>
                         </div>
                     </div>
-                </div>
-                <div class="col-4">
-                    <div class="card p-4 bg-components" style="width: 18rem;">
-                        <div class="card-body text-center">
-                            <a href="{{ url_for('types') }}"> Výpis všech typů</a>
-                        </div>
+                {% else %}
+                    <div class="col-lg-12 bg-components my-3 p-4">
+                        <a href="devices/{{ device.id }}">{{ device.label }}</a>
                     </div>
-                </div>
-            </div>
-        </div>
-        <div class="row my-5">
-            {% if scenes %}
-                {% for scene in scenes %}
-                    {% if g.user['is_supervisor'] == 1 %}
-                        <div class="col-10 bg-components my-3 p-4">
-                            <a href="scenes/{{ scene.id }}">{{ scene.label }}</a>
-                        </div>
-                        <div class="col-1 bg-components  my-3 p-3">
-                            <a href="scenes/{{ scene.id }}/edit/">
-                                <button class="btn btn-primary">Edit</button>
-                            </a>
-                        </div>
-                        <div class="col-1 bg-components my-3 p-3 ">
-                            <a href="">
-                                <button class="btn btn-delete">Delete</button>
-                            </a>
-                        </div>
-                    {% else %}
-                        <div class="col-12 bg-components my-3 p-4">
-                            <a href="scenes/{{ scene.id }}">{{ scene.label }}</a>
-                        </div>
-                    {% endif %}
-                {% endfor %}
-            {% endif %}
-        </div>
-        <hr />
-        <div class="row my-5">
-            {% if devices %}
-                {% for device in devices %}
-                    {% if g.user['is_supervisor'] == 1 %}
-                        <div class="col-10 bg-components my-3 p-4">
-                            <a href="devices/{{ device.id }}">{{ device.label }}</a>
-                        </div>
-                        <div class="col-1 bg-components  my-3 p-3">
-                            <a href="devices/{{ device.id }}/edit/">
-                                <button class="btn btn-primary">Edit</button>
-                            </a>
-                        </div>
-                        <div class="col-1 bg-components my-3 p-3 ">
-                            <a href="">
-                                <button class="btn btn-delete">Delete</button>
-                            </a>
-                        </div>
-                    {% else %}
-                        <div class="col-12 bg-components my-3 p-4">
-                            <a href="devices/{{ device.id }}">{{ device.label }}</a>
-                        </div>
-                    {% endif %}
-                {% endfor %}
-            {% endif %}
-        </div>
+                {% endif %}
+            {% endfor %}
+        {% endif %}
     </div>
 {% endblock %}
