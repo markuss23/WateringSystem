@@ -1,0 +1,58 @@
+{% extends 'base.html' %}
+
+{% block title %}
+    {% if datas %}
+        {% for data in datas %}
+            {{ data.label }}
+        {% endfor %}
+    {% endif %}
+{% endblock %}
+
+{% block content %}
+    <form method="post">
+        {% if datas %}
+            {% for data in datas %}
+                <div class="form-group">
+                    <label for="label">Název zařízení</label>
+                    <input name="label" id="label" class="form-control" value="{{ data.label }}" required>
+                </div>
+                <div class="form-group">
+                    <label for="device_topic">adresa zařízení</label>
+                    <input name="device_topic" id="device_topic" class="form-control" value="{{ data.device_topic }}"
+                           required>
+                </div>
+
+                <div class="form-group form-check">
+                    {% if data.is_active == 1 %}
+                        <input type="checkbox" id="is_active" name="is_active" checked>
+                    {% else %}
+                        <input type="checkbox" id="is_active" name="is_active">
+                    {% endif %}
+                    <label class="form-check-label">Je aktivní?</label>
+                </div>
+
+                <div class="form-group">
+                    {% if types %}
+                        <label class="form-check-label">Typ</label>
+                        <select name="types" class="form-control">
+                            {% for o in types %}
+                                <option value="{{ o.id }}">{{ o.label }}</option>
+                            {% endfor %}
+                        </select>
+                    {% endif %}
+                </div>
+
+                <div class="form-group">
+                    <label for="pin">Pin zařízení</label>
+                    <input type="number" name="pin" id="pin" class="form-control" value="{{ data.pin }}" required>
+                </div>
+
+                <input type="submit" value="Edit">
+            {% endfor %}
+        {% endif %}
+    </form>
+    {% for message in get_flashed_messages() %}
+        <div class="flash">{{ message }}</div>
+    {% endfor %}
+
+{% endblock %}

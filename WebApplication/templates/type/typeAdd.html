@@ -4,31 +4,39 @@
 
 {% block content %}
     <form method="post">
+        <div class="form-group">
             <label for="label">Název typu</label>
-            <input name="label" id="label">
-
-            <label for="typ">Typ input / output</label>
-            <input name="typ" id="typ">
-
+            <input name="label" id="label" class="form-control" required>
+        </div>
+        <div class="form-group">
+               <label for="typ">Typ input / output</label>
+                <input name="typ" id="typ" class="form-control" required>
+        </div>
+        <div class="form-group">
             <label for="jednotka">Jednotka</label>
-            <input name="jednotka" id="jednotka">
-
+            <input name="jednotka" id="jednotka" class="form-control">
+        </div>
+        <div class="form-group">
             <label for="min">Minimální</label>
-            <input type="number" name="min" id="min">
-
+            <input type="number" name="min" id="min" class="form-control">
+        </div>
+        <div class="form-group">
             <label for="max">Maximální</label>
-            <input type="number" name="max" id="max">
-
-            <label for="interval">Interval zmeny</label>
-            <input type="number" name="interval" id="interval">
-
+            <input type="number" name="max" id="max" class="form-control">
+        </div>
+        <div class="form-group">
+            <label for="interval">Interval zmeny</label >
+            <input type="number" name="interval" id="interval" class="form-control">
+        </div>
+        <div class="form-group">
             <label for="type_topic">adresa typu</label>
-            <input name="type_topic" id="type_topic" required>
-
-            <label for="is_active">Je aktivní?</label><br>
-            <input type="checkbox" id="is_active" name="is_active">
-
-            <input type="submit" value="Přidat">
+            <input name="type_topic" id="type_topic" class="form-control" required>
+        </div>
+        <div class="form-group form-check">
+            <label>Je aktivní?</label>
+            <input type="checkbox" id="is_active" name="is_active" class="form-check">
+        </div>
+        <input type="submit" value="Přidat">
     </form>
 
 {% endblock %}

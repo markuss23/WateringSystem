@@ -9,8 +9,8 @@ from WebApplication.views.db import get_db_connection
 bp = Blueprint('devices', __name__, url_prefix='/devices')
 
 
-@login_required
 @bp.route('/')
+@login_required
 def devices():
     template_data = {
         'devices': False,
@@ -26,8 +26,8 @@ def devices():
     return render_template('device/deviceList.html', **template_data)
 
 
-@login_required
 @bp.route('/<int:id>/')
+@login_required
 def device(id):
     template_data = {
         'devices': False,
@@ -57,8 +57,8 @@ def device(id):
     return render_template('device/deviceDetail.html', **template_data)
 
 
-@login_required
 @bp.route('/add/', methods=("POST", "GET"))
+@login_required
 def devices_add():
     if g.user['is_supervisor'] != 1:
         return redirect(url_for('devices'))
@@ -107,3 +107,68 @@ def devices_add():
         pass
 
     return render_template('device/deviceAdd.html', **template_data)
+
+
+@bp.route('/<int:id>/edit/', methods=("POST", "GET"))
+@login_required
+def devices_edit(id):
+    if g.user['is_supervisor'] != 1:
+        return redirect(url_for('devices'))
+
+    conn = get_db_connection()
+    template_data = {
+        'datas': False,
+        'types': False
+    }
+
+    try:
+        if request.method == 'POST':
+            label = request.form['label']
+            device_topic = request.form['device_topic']
+            is_active = request.form.get('is_active')
+            select = request.form.get('types')
+            pin = request.form['pin']
+
+            if is_active is None:
+                is_active = 0
+            else:
+                is_active = 1
+            if device_topic[-1] != "/":
+                device_topic = device_topic + "/"
+            error = None
+
+            if not label:
+                error = 'Název scény chybí'
+            if not device_topic:
+                error = 'Adresa chybí'
+            if not pin:
+                error = 'Pin chybí'
+
+
+            if error is None:
+                try:
+                    conn.execute(
+                        "UPDATE device SET type_id=?, label = ?, device_topic = ?, is_active = ?, pin=? WHERE device.id = ?",
+                        (select, label, device_topic, is_active,pin, id))
+                    conn.commit()
+                    print("asd")
+                except error:
+                    error = "chyba při zapsání do Databáze"
+                else:
+                    return redirect('/devices/')
+            flash(error)
+    except:
+        pass
+
+    try:
+        datas = conn.execute("select * from device as s where s.id = ?",
+                             (id,)).fetchall()
+
+        types = conn.execute("select * from type")
+
+        template_data['datas'] = datas
+        template_data['types'] = types
+    except:
+        pass
+
+    return render_template('device/deviceEdit.html', **template_data)

@@ -9,28 +9,8 @@ from WebApplication.views.db import get_db_connection
 bp = Blueprint('scenes', __name__, url_prefix='/scenes')
 
 
-@login_required
-@bp.route('/index/')
-def main():
-    template_data = {
-        'scenes': False,
-        'devices': False,
-    }
-    try:
-        conn = get_db_connection()
-        scenes = conn.execute("select * from scene where is_active=1").fetchall()
-        devices = conn.execute("select * from device where is_active=1").fetchall()
-        conn.close()
-        template_data['scenes'] = scenes
-        template_data['devices'] = devices
-    except:
-        pass
-
-    return render_template('index.html', **template_data)
-
-
-@login_required
 @bp.route('/')
+@login_required
 def scenes():
     template_data = {
         'scenes': False,
@@ -38,7 +18,7 @@ def scenes():
     }
     try:
         conn = get_db_connection()
-        scenes = conn.execute("select * from scene").fetchall()
+        scenes = conn.execute("select * from scene order by is_active desc ").fetchall()
         conn.close()
         template_data['scenes'] = scenes
 
@@ -47,8 +27,8 @@ def scenes():
     return render_template('scene/sceneList.html', **template_data)
 
 
-@login_required
 @bp.route('/<int:id>/')
+@login_required
 def scene(id):
     template_data = {
         'scenes': False,
@@ -73,8 +53,8 @@ def scene(id):
     return render_template('scene/sceneDetail.html', **template_data)
 
 
-@login_required
 @bp.route('/add/', methods=("POST", "GET"))
+@login_required
 def scenes_add():
     if g.user['is_supervisor'] != 1:
         return redirect(url_for('scenes'))
@@ -113,8 +93,8 @@ def scenes_add():
     return render_template('scene/sceneAdd.html')
 
 
-@login_required
 @bp.route('/<int:id>/edit/', methods=("POST", "GET"))
+@login_required
 def scenes_edit(id):
     if g.user['is_supervisor'] != 1:
         return redirect(url_for('scenes'))
