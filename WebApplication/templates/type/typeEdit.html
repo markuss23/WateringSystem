@@ -1,0 +1,60 @@
+{% extends 'base.html' %}
+
+{% block title %}
+
+    {% if datas %}
+        {% for data in datas %}
+           Typ: {{ data.label }}
+        {% endfor %}
+
+    {% endif %}
+
+{% endblock %}
+
+{% block content %}
+    <form method="post">
+        {% if datas %}
+            {% for data in datas %}
+                <div class="form-group">
+                    <label>Název typu</label>
+                    <input name="label" type="text" class="form-control" value="{{ data.label }}" required>
+                </div>
+                <div class="form-group">
+                    <label>Typ</label>
+                    <input name="typ" type="text" class="form-control" value="{{ data.typ }}" required>
+                </div>
+                <div class="form-group">
+                    <label>Jednotka</label>
+                    <input name="jednotka" type="text" class="form-control" value="{{ data.jednotka }}">
+                </div>
+                <div class="form-group">
+                    <label>Minimum</label>
+                    <input name="min" type="number" class="form-control" value="{{ data.minimum }}">
+                </div>
+                <div class="form-group">
+                    <label>Maximum</label>
+                    <input name="max" type="number" class="form-control" value="{{ data.maximum }}">
+                </div>
+                <div class="form-group">
+                    <label>Interval změny</label>
+                    <input name="interval" type="number" class="form-control" value="{{ data.interval }}">
+                </div>
+                <div class="form-group">
+                    <label>Adresa typu (topic)</label>
+                    <input name="type_topic" type="text" class="form-control" value="{{ data.type_topic }}" required>
+                </div>
+                <div class="form-group form-check">
+                    <label for="is_active">Aktivní</label><br>
+                    {% if data.is_active == 1 %}
+                        <input type="checkbox" id="is_active" name="is_active" checked>
+                    {% else %}
+                        <input type="checkbox" id="is_active" name="is_active">
+                    {% endif %}
+                    <label class="form-check-label">Je aktivní?</label>
+                </div>
+                <button type="submit" class="btn btn-primary">Submit</button>
+            {% endfor %}
+        {% endif %}
+
+    </form>
+{% endblock %}

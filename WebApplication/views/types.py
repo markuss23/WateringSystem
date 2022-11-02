@@ -1,3 +1,5 @@
+from cProfile import label
+
 from flask import (
     Blueprint, flash, g, redirect, render_template, request, url_for
 )
@@ -9,8 +11,8 @@ from WebApplication.views.db import get_db_connection
 bp = Blueprint('types', __name__, url_prefix='/types')
 
 
-@login_required
 @bp.route('/')
+@login_required
 def types():
     template_data = {
         'types': False,
@@ -26,8 +28,8 @@ def types():
     return render_template('type/typeList.html', **template_data)
 
 
-@login_required
 @bp.route('/<int:id>/')
+@login_required
 def type(id):
     template_data = {
         'types': False,
@@ -52,8 +54,8 @@ def type(id):
     return render_template('type/typeDetail.html', **template_data)
 
 
-@login_required
 @bp.route('/add/', methods=("POST", "GET"))
+@login_required
 def types_add():
     try:
         if request.method == 'POST':
@@ -73,6 +75,7 @@ def types_add():
                 is_active = 1
             if type_topic[-1] != "/":
                 type_topic = type_topic + "/"
+
             error = None
 
             if not label:
@@ -96,3 +99,68 @@ def types_add():
         pass
 
     return render_template('type/typeAdd.html')
+
+
+@bp.route('/<int:id>/edit/', methods=("POST", "GET"))
+@login_required
+def types_edit(id):
+    if g.user['is_supervisor'] != 1:
+        return redirect(url_for('types'))
+
+    conn = get_db_connection()
+    template_data = {
+        'datas': False,
+    }
+
+    try:
+        if request.method == 'POST':
+
+            label = request.form['label']
+            typ = request.form['typ']
+            jednotka = request.form['jednotka']
+            minimum = request.form['min']
+            maximum = request.form['max']
+            interval = request.form['interval']
+            type_topic = request.form['type_topic']
+            is_active = request.form.get('is_active')
+            conn = get_db_connection()
+            if is_active is None:
+                is_active = 0
+            else:
+                is_active = 1
+            if type_topic[-1] != "/":
+                type_topic = type_topic + "/"
+
+            error = None
+
+            if not label:
+                error = 'Název scény chybí'
+            if not typ:
+                error = 'Chybí typ'
+            if not type_topic:
+                error = 'Adresa chybí'
+
+            if error is None:
+                try:
+
+                    conn.execute(
+                        "UPDATE type SET label = ?, typ=?, jednotka=?, min=?, max=? , interval_zmeny=? , type_topic = ?, is_active = ? WHERE type.id = ?",
+                        (label, typ, jednotka, minimum, maximum, interval, type_topic, is_active, id))
+                    conn.commit()
+                except error:
+                    error = "chyba při zapsání do Databáze"
+                else:
+                    return redirect('/types/')
+            flash(error)
+    except:
+        pass
+
+    try:
+        datas = conn.execute("select * from type as s where s.id = ?",
+                             (id,)).fetchall()
+
+        template_data['datas'] = datas
+    except:
+        pass
+
+    return render_template('type/typeEdit.html', **template_data)

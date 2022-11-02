@@ -62,9 +62,11 @@ def action(scene, device, action):
 from views import auth
 app.register_blueprint(auth.bp)
 
+from views import homepage
+app.register_blueprint(homepage.bp)
+
 from views import scenes
 app.register_blueprint(scenes.bp)
-app.add_url_rule('/', endpoint='scenes.main')
 
 from views import devices
 app.register_blueprint(devices.bp)

@@ -11,24 +11,25 @@
 {% block content %}
     <form method="post">
         {% for data in datas %}
-            <label for="label">Název scény</label>
-            <input name="label" id="label" required value="{{ data.label }}">
-
-            <label for="scene_topic">adresa scény</label>
-            <input name="scene_topic" id="scene_topic" required value="{{ data.scene_topic }}">
-
-            <label for="is_active">Aktivní</label><br>
-            {% if data.is_active == 1 %}
-                <input type="checkbox" id="is_active" name="is_active" checked>
-            {% else %}
-                <input type="checkbox" id="is_active" name="is_active">
-            {% endif %}
-
-
-            <input type="submit" value="edit">
-
+            <div class="form-group">
+                <label for="label">Název scény</label>
+                <input name="label" id="label" class="form-control" required value="{{ data.label }}">
+            </div>
+            <div class="form-group">
+                <label for="scene_topic">adresa scény</label>
+                <input name="scene_topic" id="scene_topic" class="form-control" required value="{{ data.scene_topic }}">
+            </div>
+            <div class="form-group form-check">
+                    {% if data.is_active == 1 %}
+                        <input type="checkbox" id="is_active" name="is_active" checked>
+                    {% else %}
+                        <input type="checkbox" id="is_active" name="is_active">
+                    {% endif %}
+                    <label class="form-check-label">Je aktivní?</label>
+                </div>
+            <input type="submit" value="Edit">
         {% endfor %}
-  </form>
+    </form>
     {% for message in get_flashed_messages() %}
         <div class="flash">{{ message }}</div>
     {% endfor %}

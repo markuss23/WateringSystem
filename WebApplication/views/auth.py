@@ -32,8 +32,8 @@ def login_required(view):
     return wrapped_view
 
 
-@login_required
 @bp.route('/add/', methods=('GET', 'POST'))
+@login_required
 def user_add():
     if g.user['is_supervisor'] == 1:
 
@@ -126,6 +126,9 @@ def user_login():
 def user_logout():
     session.clear()
     return redirect(url_for('auth.user_login'))
+
+
+
 
 
 
