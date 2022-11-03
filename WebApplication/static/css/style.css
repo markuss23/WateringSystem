@@ -981,11 +981,11 @@ form-check-input[disabled] ~ .form-check-label,
 }
 
 .border-online {
-    border: green 1px solid;
+    border-bottom: green 5px solid;
 }
 
 .border-offline {
-    border: grey 1px solid;
+    border-bottom: grey 5px solid;
 }
 
 table {

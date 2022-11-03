@@ -144,3 +144,52 @@ def scenes_edit(id):
         pass
 
     return render_template('scene/sceneEdit.html', **template_data)
+
+@bp.route('/<int:id>/attach/', methods=("POST", "GET"))
+@login_required
+def scenes_attach(id):
+
+    if g.user['is_supervisor'] != 1:
+        return redirect(url_for('scenes'))
+
+    template_data = {
+        'scenes': False,
+        'devices': False,
+    }
+    conn = get_db_connection()
+    try:
+        if request.method == 'POST':
+
+            select = request.form.get('devices_pair')
+            is_active = request.form.get('is_active')
+            if is_active is None:
+                is_active = 0
+            else:
+                is_active = 1
+            print("asd")
+            try:
+                conn.execute("INSERT INTO scene_device VALUES (NULL,?,?,?)",
+                             (select, id, is_active))
+                conn.commit()
+            except conn.IntegrityError:
+                error = "chyba při zápisu"
+            else:
+                return redirect('/scenes/')
+    except:
+        pass
+
+    try:
+        scenes = conn.execute(
+            "select * from scene where scene.id = ?",
+            (id,)).fetchall()
+        devices = conn.execute(
+            "select * from device where (id not in (select device_id from scene_device where scene_id = ?) and is_active = 1)",
+            (id,)).fetchall()
+
+        template_data['scenes'] = scenes
+        template_data['devices'] = devices
+
+    except:
+        pass
+
+    return render_template('scene/sceneAttach.html', **template_data)
