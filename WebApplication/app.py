@@ -21,9 +21,7 @@ def page_not_found(e):
 
 
 """""
-mqttc = mqtt.Client()
-mqttc.connect("192.168.0.15", 1883, 60)
-mqttc.loop_start()
+
 
 je potřeba dodělat CRUD funkce,
 
