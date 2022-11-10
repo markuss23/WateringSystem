@@ -64,8 +64,21 @@ a {
 }
 
 a:hover {
-    color: #CDCDCDFF;
-    text-decoration: underline;
+    color: #e0e0e0;
+    text-decoration: none;
+
+}
+
+.link-brown {
+    transition: 0.25s;
+}
+
+.link-brown:hover {
+    color: #222831;
+    text-decoration: none;
+    background: #C1A57B;
+    transition: 0.25s;
+    border-radius: 0.25rem;
 }
 
 h1, .h1 {
@@ -150,7 +163,8 @@ input[type="checkbox"] {
 }
 
 
-.container {
+.container,
+.container-fluid {
     width: 100%;
     padding-right: 15px;
     padding-left: 15px;
@@ -813,7 +827,7 @@ input[type="checkbox"] {
 
 .btn-primary {
     color: #fff;
-    background-color: #007bff;
+    background-color: #1f86ff;
     border-color: #007bff;
 }
 
@@ -825,20 +839,59 @@ input[type="checkbox"] {
 
 .btn-delete {
     color: #fff;
-    background-color: red;
-    border-color: red;
+    background-color: #F94C66;
+    border-color: #F94C66;
 }
 
 .btn-delete:hover {
     color: #fff;
-    background-color: red;
-    border-color: red;
+    background-color: #e73148;
+    border-color: #e73148;
 }
 
 .bg-components {
     background: #30475E;
     border-radius: 0.25rem;
 }
+
+.text-delete{
+    color: #fc2130;
+}
+
+.bg-nav {
+    border-left: 5px solid #C1A57B;
+}
+
+.bg-scenes {
+    border-left: 5px solid #BD4291;
+}
+
+.bg-devices {
+    border-left: 5px solid #F94C66;
+}
+
+.bg-types{
+    border-left: 5px solid #FFC54D;
+}
+
+.dot {
+    position: absolute;
+    width: 10px;
+    height: 10px;
+
+    border-radius: 100%;
+    left: 92%;
+
+}
+
+.dot-online {
+    background: #00ff38;
+}
+
+.dot-offline {
+    background: gray;
+}
+
 
 .text-center {
     text-align: center !important;
@@ -871,7 +924,6 @@ input[type="checkbox"] {
     min-width: 0;
     word-wrap: break-word;
     background-clip: border-box;
-    border: 1px solid rgba(0, 0, 0, 0.125);
     border-radius: 0.25rem;
 }
 
@@ -879,8 +931,9 @@ input[type="checkbox"] {
     -ms-flex: 1 1 auto;
     flex: 1 1 auto;
     min-height: 1px;
-    padding: 1.25rem;
+    padding: 1.50rem 1.25rem 0.25rem;
 }
+
 
 .card-title {
     margin-bottom: 0.75rem;
@@ -981,11 +1034,11 @@ form-check-input[disabled] ~ .form-check-label,
 }
 
 .border-online {
-    border: green 1px solid;
+    border-left: #53BF9D 5px solid;
 }
 
 .border-offline {
-    border: grey 1px solid;
+    border-left: grey 5px solid;
 }
 
 table {

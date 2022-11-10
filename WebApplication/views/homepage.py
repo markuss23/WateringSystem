@@ -20,6 +20,7 @@ def main():
         conn = get_db_connection()
         scenes = conn.execute("select * from scene where is_active=1").fetchall()
         devices = conn.execute("select * from device where is_active=1").fetchall()
+
         conn.close()
         template_data['scenes'] = scenes
         template_data['devices'] = devices
