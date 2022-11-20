@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="cs">
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
@@ -8,6 +8,7 @@
 
     <script src="{{ url_for('static', filename='js/jquery.js') }}"></script>
     <script src="{{ url_for('static', filename='js/bootstrap-pincode-input.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/socketio.js') }}"></script>
 
     <script>
         $(document).ready(function () {
@@ -17,6 +18,10 @@
                 }
             });
         })
+    </script>
+    <script>
+        let socket = io.connect('http://' + document.domain + ':' + location.port);
+
     </script>
 
     <title>Title</title>
@@ -92,4 +97,7 @@
 </div>
 
 </body>
+<script src="{{ url_for('static', filename='js/mqtt-socket.js') }}">
+
+</script>
 </html>

@@ -8,7 +8,6 @@ from WebApplication.views.db import get_db_connection
 
 bp = Blueprint('devices', __name__, url_prefix='/devices')
 
-
 @bp.route('/')
 @login_required
 def devices():
@@ -32,7 +31,7 @@ def device(id):
     template_data = {
         'devices': False,
         'scenes': False,
-        'types': False
+        'types': False,
     }
     try:
         conn = get_db_connection()
@@ -144,12 +143,11 @@ def devices_edit(id):
             if not pin:
                 error = 'Pin chybí'
 
-
             if error is None:
                 try:
                     conn.execute(
                         "UPDATE device SET type_id=?, label = ?, device_topic = ?, is_active = ?, pin=? WHERE device.id = ?",
-                        (select, label, device_topic, is_active,pin, id))
+                        (select, label, device_topic, is_active, pin, id))
                     conn.commit()
                     print("asd")
                 except error:
@@ -172,3 +170,5 @@ def devices_edit(id):
         pass
 
     return render_template('device/deviceEdit.html', **template_data)
+
+

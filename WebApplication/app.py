@@ -1,13 +1,67 @@
-import os
+import json
 
-from views import auth
-
-import sqlite3
+import eventlet
 
 from flask import Flask, render_template, request, flash, redirect, session
+from WebApplication.views.mqtt_connector import broker_address
+from flask_mqtt import Mqtt
+from flask_socketio import SocketIO
+from flask_session import Session
+
+eventlet.monkey_patch()
 
 app = Flask(__name__)
 app.secret_key = "super secret key"
+app.config['SESSION_TYPE'] = 'mqtt_session'
+app.config['MQTT_BROKER_URL'] = broker_address
+app.config['MQTT_BROKER_PORT'] = 1883
+app.config['MQTT_CLIENT_ID'] = 'flask_mqtt'
+app.config['MQTT_KEEPALIVE'] = 2
+app.debug = False
+mqtt = Mqtt(app)
+socketio = SocketIO(app)
+socketio.run(app)
+
+
+@socketio.on('publish')
+def handle_publish(json_str):
+    data = json.loads(json_str)
+    mqtt.publish(data['topic'], data['message'], data['qos'])
+
+
+@socketio.on('subscribe')
+def handle_subscribe(json_str):
+    print('prihlaseno')
+    data = json.loads(json_str)
+    mqtt.subscribe(data['topic'], data['qos'])
+
+
+@socketio.on('unsubscribe_all')
+def handle_unsubscribe_all():
+    mqtt.unsubscribe_all()
+
+
+@socketio.on('unsubscribe')
+def handle_unsubscribe(json_str):
+    data = json.loads(json_str)
+    mqtt.unsubscribe(data['topic'])
+
+
+@mqtt.on_message()
+def handle_mqtt_message(client, userdata, message):
+    print('odelsano')
+    data = dict(
+        topic=message.topic,
+        payload=message.payload.decode(),
+        qos=message.qos,
+    )
+    socketio.emit('mqtt_message', data=data)
+
+
+@mqtt.on_log()
+def handle_logging(client, userdata, level, buf):
+    print(level, buf)
+
 
 
 @app.before_request
@@ -20,58 +74,25 @@ def page_not_found(e):
     return redirect('/')
 
 
-"""""
-
-
-je potřeba dodělat CRUD funkce,
-
-@app.route("/<scene>/<device>/<action>")
-def action(scene, device, action):
-    conn = get_db_connection()
-    try:
-        command = conn.execute("select pin, label from device where device.device_topic = ?",
-                               (device + "/",)).fetchall()
-        for split in command:
-            help = (' '.join(split)).split(" ")
-
-        command = conn.execute(
-            "select type_topic from type where type.id = (select device.type_id from device where device.label = ?)",
-            (help[1],)).fetchall()
-        for split in command:
-            number = (' '.join(split)).split(" ")
-
-    except:
-        print("error")
-        pass
-
-    try:
-
-        if action == "1":
-            mqttc.publish(scene+"/"+device+"/"+end_topic + "command", "on")
-        if action == "0":
-            mqttc.publish(scene+"/"+device+"/"+end_topic + "command", "off")
-
-        return scene + "/" + device + "/" + number[0] + help[0] + "command"
-
-    except:
-        pass
-"""
-
 from views import auth
 app.register_blueprint(auth.bp)
+
 
 from views import homepage
 app.register_blueprint(homepage.bp)
 
+
 from views import scenes
 app.register_blueprint(scenes.bp)
 
+
 from views import devices
 app.register_blueprint(devices.bp)
+
 
 from views import types
 app.register_blueprint(types.bp)
 
 
 if __name__ == '__main__':
-    app.run(host='0.0.0.0', port=5000, debug=True)
+    socketio.run(app, host='0.0.0.0', port=5000, use_reloader=False, debug=True, allow_unsafe_werkzeug=True)
