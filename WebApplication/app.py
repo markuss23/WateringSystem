@@ -2,10 +2,11 @@ import json
 
 import eventlet
 
-from flask import Flask, render_template, request, flash, redirect, session
+from flask import Flask, render_template, request, flash, redirect, session, g
 from WebApplication.views.mqtt_connector import broker_address
 from flask_mqtt import Mqtt
 from flask_socketio import SocketIO
+from WebApplication.views.db import get_db_connection
 from flask_session import Session
 
 eventlet.monkey_patch()
@@ -64,6 +65,19 @@ def handle_logging(client, userdata, level, buf):
 
 
 
+@app.before_first_request
+def load_devices():
+    conn = get_db_connection()
+
+    devices = conn.execute("select device_topic from device where is_active=1").fetchall()
+    for i in range(len(devices)):
+        data = {
+            'topic': devices[i][0],
+            'qos': 1
+        }
+        handle_subscribe(json.dumps(data))
+
+
 @app.before_request
 def load_logged_in_user():
     auth.load_logged_in_user()
@@ -75,24 +89,24 @@ def page_not_found(e):
 
 
 from views import auth
+
 app.register_blueprint(auth.bp)
 
-
 from views import homepage
+
 app.register_blueprint(homepage.bp)
 
-
 from views import scenes
+
 app.register_blueprint(scenes.bp)
 
-
 from views import devices
+
 app.register_blueprint(devices.bp)
 
-
 from views import types
-app.register_blueprint(types.bp)
 
+app.register_blueprint(types.bp)
 
 if __name__ == '__main__':
     socketio.run(app, host='0.0.0.0', port=5000, use_reloader=False, debug=True, allow_unsafe_werkzeug=True)
