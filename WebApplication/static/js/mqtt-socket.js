@@ -1,19 +1,33 @@
 let dict = {};
 let topic = [];
 let payload = [];
+myStorage = window.localStorage;
+
+function removeDuplicates() {
+    let unique = [];
+    topic.forEach(element => {
+        if (!unique.includes(element)) {
+            unique.push(element);
+        }
+    });
+    topic = unique;
+}
+
+
+
 $(document).ready(function () {
-    let json = JSON.parse(sessionStorage.getItem('devices'))
+    console.log(JSON.parse(myStorage.getItem('devices')));
+    let json = JSON.parse(myStorage.getItem('devices'));
     let topics = [];
-    let payloads = []
+    let payloads = [];
     topics.push(json['topic']);
     payloads.push(json['payload']);
     for (let i = 0; i < topics[0].length; i++) {
         if ($('#topic').text() === topics[0][i]) {
-            if (parseFloat(payloads[0][i])){
+            if (parseFloat(payloads[0][i])) {
                 console.log('tady');
                 $('#publish').text(payloads[0][i]);
-            }
-            else{
+            } else {
                 $('#publish').text(changeState(payloads[0][i]));
             }
         }
@@ -22,34 +36,35 @@ $(document).ready(function () {
 
 });
 socket.on('mqtt_message', function (data) {
+    let indexTopic = 0;
     topic.push(data['topic'])
-    payload.push(data['payload'])
     dict = {
         'topic': topic,
         'payload': payload
     }
+    removeDuplicates();
+    payload[topic.indexOf(data['topic'])] = data['payload'];
 
-    for (let i = 0; i < topic[0].length; i++) {
-        if ($('#topic').text() === topic[0][i]) {
-            if (parseFloat(payload[0][i])){
-                console.log('tady');
-                $('#publish').text(payload[0][i]);
-            }
-            else{
-                $('#publish').text(changeState(payload[0][i]));
+
+    for (let i = 0; i < topic.length; i++) {
+        if ($('#topic').text() === topic[i]) {
+            if (parseFloat(payload[i])) {
+                $('#publish').text(payload[i]);
+            } else {
+                $('#publish').text(changeState(payload[i]));
             }
         }
-
     }
-    console.log(payload);
 
-    sessionStorage.setItem('devices', JSON.stringify(dict))
 
+    dict['topic'] = topic;
+    dict['payload'] = payload;
+    myStorage.setItem('devices', JSON.stringify(dict))
+
+    //console.log(sessionStorage.getItem('devices'));
 })
 
 $('#publish').click(function (event) {
-    topic.pop();
-    payload.pop();
 
     let topics = $('#topic').text();
     if (getShelly(topics) === true) {
@@ -83,15 +98,9 @@ function getShelly(topic) {
     if (slice === 'relay') ;
     return true;
 }
-
 /*
-let topic = $("#topic").text();
-let qos = 1;
-let data = '{"topic": "' + topic + '", "qos": ' + qos + '}';
-console.log(topic);
-if (topic) {
-    console.log('jsem tady');
-    socket.emit('subscribe', data = data);
-} else {
-    console.log('nejsem tady');
-}*/
+window.onbeforeunload = function (e) {
+    console.log(e);
+    myStorage.setItem('devices', JSON.stringify(dict));
+    console.log("tu jsem");
+};*/
