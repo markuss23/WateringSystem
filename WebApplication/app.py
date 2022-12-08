@@ -50,7 +50,6 @@ def handle_unsubscribe(json_str):
 
 @mqtt.on_message()
 def handle_mqtt_message(client, userdata, message):
-    print('odelsano')
     data = dict(
         topic=message.topic,
         payload=message.payload.decode(),
@@ -61,8 +60,8 @@ def handle_mqtt_message(client, userdata, message):
 
 @mqtt.on_log()
 def handle_logging(client, userdata, level, buf):
-    print(level, buf)
-
+    #print(level, buf)
+    pass
 
 
 @app.before_first_request

@@ -1,7 +1,13 @@
-let dict = {};
+let dict = {
+    'topic': 'False',
+    'payload': 'False'
+};
 let topic = [];
 let payload = [];
+let text;
+let textPayload;
 myStorage = window.localStorage;
+
 
 function removeDuplicates() {
     let unique = [];
@@ -14,14 +20,13 @@ function removeDuplicates() {
 }
 
 
-
 $(document).ready(function () {
-    console.log(JSON.parse(myStorage.getItem('devices')));
-    let json = JSON.parse(myStorage.getItem('devices'));
+    console.log(JSON.parse(localStorage.getItem('topic')));
+    console.log(JSON.parse(localStorage.getItem('payload')));
     let topics = [];
     let payloads = [];
-    topics.push(json['topic']);
-    payloads.push(json['payload']);
+    topics.push(JSON.parse(localStorage.getItem('topic')));
+    payloads.push(JSON.parse(localStorage.getItem('payload')));
     for (let i = 0; i < topics[0].length; i++) {
         if ($('#topic').text() === topics[0][i]) {
             if (parseFloat(payloads[0][i])) {
@@ -36,16 +41,24 @@ $(document).ready(function () {
 
 });
 socket.on('mqtt_message', function (data) {
-    let indexTopic = 0;
-    topic.push(data['topic'])
-    dict = {
-        'topic': topic,
-        'payload': payload
-    }
+    text = JSON.parse(localStorage.getItem('topic'));
+    textPayload = JSON.parse(localStorage.getItem('payload'));
+    topic.splice(topic.length - 1, 0, data['topic']);
     removeDuplicates();
+
+    let absent = text.filter(e => !topic.includes(e));
+    if (absent.length > 1) {
+        for (let i = 0; i < absent.length; i++) {
+            topic.splice(topic.length - 1, 0, absent[i]);
+        }
+    }
+
     payload[topic.indexOf(data['topic'])] = data['payload'];
-
-
+    for (let i = 0; i < payload.length; i++) {
+        if (!payload[i]){
+            payload[i] = textPayload[i];
+        }
+    }
     for (let i = 0; i < topic.length; i++) {
         if ($('#topic').text() === topic[i]) {
             if (parseFloat(payload[i])) {
@@ -55,13 +68,6 @@ socket.on('mqtt_message', function (data) {
             }
         }
     }
-
-
-    dict['topic'] = topic;
-    dict['payload'] = payload;
-    myStorage.setItem('devices', JSON.stringify(dict))
-
-    //console.log(sessionStorage.getItem('devices'));
 })
 
 $('#publish').click(function (event) {
@@ -98,9 +104,11 @@ function getShelly(topic) {
     if (slice === 'relay') ;
     return true;
 }
-/*
-window.onbeforeunload = function (e) {
-    console.log(e);
-    myStorage.setItem('devices', JSON.stringify(dict));
-    console.log("tu jsem");
-};*/
+
+window.onbeforeunload = function (event) {
+    localStorage.setItem('topic', JSON.stringify(topic));
+    localStorage.setItem('payload', JSON.stringify(payload));
+};
+
+
+

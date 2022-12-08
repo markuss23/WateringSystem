@@ -828,13 +828,12 @@ input[type="checkbox"] {
 .btn-primary {
     color: #fff;
     background-color: #1f86ff;
-    border-color: #007bff;
 }
 
 .btn-primary:hover {
     color: #fff;
     background-color: #0069d9;
-    border-color: #0062cc;
+
 }
 
 .btn-delete {
@@ -854,8 +853,8 @@ input[type="checkbox"] {
     border-radius: 0.25rem;
 }
 
-.text-delete{
-    color: #fc2130;
+.text-delete {
+    color: #ff3737;
 }
 
 .bg-nav {
@@ -863,15 +862,15 @@ input[type="checkbox"] {
 }
 
 .bg-scenes {
-    border-left: 5px solid #BD4291;
+    border-left: 5px solid #10A19D;
 }
 
 .bg-devices {
-    border-left: 5px solid #F94C66;
+    border-left: 5px solid #540375;
 }
 
-.bg-types{
-    border-left: 5px solid #FFC54D;
+.bg-types {
+    border-left: 5px solid #FF7000;
 }
 
 .dot {
@@ -1071,4 +1070,15 @@ th {
 
 .table tbody + tbody {
     border-top: 2px solid #dee2e6;
+}
+
+.is_supervisor {
+    color: #ff3737;
+    animation: blinker 3s linear infinite;
+}
+
+@keyframes blinker {
+    50% {
+        opacity: 0;
+    }
 }
