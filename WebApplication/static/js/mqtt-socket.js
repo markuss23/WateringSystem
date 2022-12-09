@@ -1,19 +1,38 @@
-let dict = {};
+let dict = {
+    'topic': 'False',
+    'payload': 'False'
+};
 let topic = [];
 let payload = [];
+let text;
+let textPayload;
+myStorage = window.localStorage;
+
+
+function removeDuplicates() {
+    let unique = [];
+    topic.forEach(element => {
+        if (!unique.includes(element)) {
+            unique.push(element);
+        }
+    });
+    topic = unique;
+}
+
+
 $(document).ready(function () {
-    let json = JSON.parse(sessionStorage.getItem('devices'))
+    console.log(JSON.parse(localStorage.getItem('topic')));
+    console.log(JSON.parse(localStorage.getItem('payload')));
     let topics = [];
-    let payloads = []
-    topics.push(json['topic']);
-    payloads.push(json['payload']);
+    let payloads = [];
+    topics.push(JSON.parse(localStorage.getItem('topic')));
+    payloads.push(JSON.parse(localStorage.getItem('payload')));
     for (let i = 0; i < topics[0].length; i++) {
         if ($('#topic').text() === topics[0][i]) {
-            if (parseFloat(payloads[0][i])){
+            if (parseFloat(payloads[0][i])) {
                 console.log('tady');
                 $('#publish').text(payloads[0][i]);
-            }
-            else{
+            } else {
                 $('#publish').text(changeState(payloads[0][i]));
             }
         }
@@ -22,34 +41,36 @@ $(document).ready(function () {
 
 });
 socket.on('mqtt_message', function (data) {
-    topic.push(data['topic'])
-    payload.push(data['payload'])
-    dict = {
-        'topic': topic,
-        'payload': payload
+    text = JSON.parse(localStorage.getItem('topic'));
+    textPayload = JSON.parse(localStorage.getItem('payload'));
+    topic.splice(topic.length - 1, 0, data['topic']);
+    removeDuplicates();
+
+    let absent = text.filter(e => !topic.includes(e));
+    if (absent.length > 1) {
+        for (let i = 0; i < absent.length; i++) {
+            topic.splice(topic.length - 1, 0, absent[i]);
+        }
     }
 
-    for (let i = 0; i < topic[0].length; i++) {
-        if ($('#topic').text() === topic[0][i]) {
-            if (parseFloat(payload[0][i])){
-                console.log('tady');
-                $('#publish').text(payload[0][i]);
-            }
-            else{
-                $('#publish').text(changeState(payload[0][i]));
+    payload[topic.indexOf(data['topic'])] = data['payload'];
+    for (let i = 0; i < payload.length; i++) {
+        if (!payload[i]){
+            payload[i] = textPayload[i];
+        }
+    }
+    for (let i = 0; i < topic.length; i++) {
+        if ($('#topic').text() === topic[i]) {
+            if (parseFloat(payload[i])) {
+                $('#publish').text(payload[i]);
+            } else {
+                $('#publish').text(changeState(payload[i]));
             }
         }
-
     }
-    console.log(payload);
-
-    sessionStorage.setItem('devices', JSON.stringify(dict))
-
 })
 
 $('#publish').click(function (event) {
-    topic.pop();
-    payload.pop();
 
     let topics = $('#topic').text();
     if (getShelly(topics) === true) {
@@ -84,14 +105,10 @@ function getShelly(topic) {
     return true;
 }
 
-/*
-let topic = $("#topic").text();
-let qos = 1;
-let data = '{"topic": "' + topic + '", "qos": ' + qos + '}';
-console.log(topic);
-if (topic) {
-    console.log('jsem tady');
-    socket.emit('subscribe', data = data);
-} else {
-    console.log('nejsem tady');
-}*/
+window.onbeforeunload = function (event) {
+    localStorage.setItem('topic', JSON.stringify(topic));
+    localStorage.setItem('payload', JSON.stringify(payload));
+};
+
+
+

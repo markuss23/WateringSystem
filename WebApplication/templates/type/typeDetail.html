@@ -46,7 +46,7 @@
     {% if devices %}
         <br/>
         {% for device in devices %}
-            <div class="col-lg-12 bg-components my-3 p-4 h3">
+            <div class="col-lg-12 bg-components my-3 p-4 h3 bg-devices">
                 <a href="/devices/{{ device.id }}/">{{ device.label }}</a>
             </div>
         {% endfor %}

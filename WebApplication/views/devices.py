@@ -75,32 +75,29 @@ def devices_add():
             device_topic = request.form['device_topic']
             is_active = request.form.get('is_active')
             select = request.form.get('types')
-            pin = request.form['pin']
 
             if is_active is None:
                 is_active = 0
             else:
                 is_active = 1
-            if device_topic[-1] != "/":
-                device_topic = device_topic + "/"
+
             error = None
 
             if not label:
                 error = 'Název scény chybí'
             if not device_topic:
                 error = 'Adresa chybí'
-            if not pin:
-                error = 'Pin chybí'
+
 
             if error is None:
                 try:
-                    conn.execute("INSERT INTO device VALUES (NULL,?,?,?,?,?)",
-                                 (select, label, device_topic, is_active, pin + '/'))
+                    conn.execute("INSERT INTO device VALUES (NULL,?,?,?,?)",
+                                 (select, label, device_topic, is_active))
                     conn.commit()
                 except conn.IntegrityError:
                     error = f" Tato adresa již existuje "
                 else:
-                    return redirect(url_for('main'))
+                    return redirect('/devices/')
             flash(error)
     except:
         pass
@@ -126,28 +123,24 @@ def devices_edit(id):
             device_topic = request.form['device_topic']
             is_active = request.form.get('is_active')
             select = request.form.get('types')
-            pin = request.form['pin']
 
             if is_active is None:
                 is_active = 0
             else:
                 is_active = 1
-            if device_topic[-1] != "/":
-                device_topic = device_topic + "/"
             error = None
 
             if not label:
                 error = 'Název scény chybí'
             if not device_topic:
                 error = 'Adresa chybí'
-            if not pin:
-                error = 'Pin chybí'
 
+            print(error)
             if error is None:
                 try:
                     conn.execute(
-                        "UPDATE device SET type_id=?, label = ?, device_topic = ?, is_active = ?, pin=? WHERE device.id = ?",
-                        (select, label, device_topic, is_active, pin, id))
+                        "UPDATE device SET type_id=?, label = ?, device_topic = ?, is_active = ? WHERE device.id = ?",
+                        (select, label, device_topic, is_active, id))
                     conn.commit()
                     print("asd")
                 except error:
