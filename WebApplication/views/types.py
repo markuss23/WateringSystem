@@ -57,6 +57,8 @@ def type(id):
 @bp.route('/add/', methods=("POST", "GET"))
 @login_required
 def types_add():
+    if g.user['is_supervisor'] != 1:
+        return redirect('/types/')
     try:
         if request.method == 'POST':
             label = request.form['label']
@@ -105,7 +107,7 @@ def types_add():
 @login_required
 def types_edit(id):
     if g.user['is_supervisor'] != 1:
-        return redirect(url_for('types'))
+        return redirect('/types/')
 
     conn = get_db_connection()
     template_data = {

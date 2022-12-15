@@ -8,8 +8,9 @@
 {% endblock %}
 
 {% block content %}
-    <hr />
-    <div class="row my-5">
+    <div class="square square-types mt-3"></div><h2 class="ml-4">Typy</h2>
+    <hr/>
+    <div class="row mt-5">
         {% if types %}
             {% for type in types %}
                 {% if type.is_active == 1 %}

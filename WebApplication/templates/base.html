@@ -24,41 +24,56 @@
 
     </script>
 
-    <title>Title</title>
+    <title>Zavlažovací systém</title>
 </head>
 <body>
-<header>
+<header class="bg-components-dark">
     <div class="bottom-line">
-        <div class="container-fluid">
-            <div class="row my-5">
-                <div class="col-lg-1"></div>
-                <div class="col-lg-2">
-                    <div class="pl-5">
-                        {% if g.user['is_supervisor'] %}
-                            <p class="h3 pt-3 is_supervisor">{{ g.user['username'] }}</p>
-                        {% else %}
-                            <p class="h3 pt-3">{{ g.user['username'] }}</p>
-                        {% endif %}
-                    </div>
-                </div>
-                <div class="col-lg-5">
-                    <div class="pl-5">
+        <div class="container">
+            <div class="row py-5">
+                <div class="col-lg-12">
+                    <div class="float-left">
                         <h1 class=" text-header h1">{% block title %}{% endblock %}</h1>
                     </div>
-                </div>
-                <div class="col-lg-2">
-                    <div class="pl-5 pr-5">
-                        <a href="{{ url_for('auth.user_logout') }}">
-                            <div class="card bg-components link-brown bg-nav ">
-                                <div class="card-body h5 card-body text-center">
-                                    <p class="h6">Odhlásit se</p>
+                    <div class="float-right h2">
+                        <div class="">
+                            <a href="{{ url_for('auth.user_logout') }}">
+                                <div class="card bg-components link-brown bg-nav ">
+                                    <div class="card-body h5 card-body text-center">
+                                        <p class="h6">Odhlásit se</p>
+                                    </div>
                                 </div>
-                            </div>
-                        </a>
+                            </a>
+                        </div>
+                        <div class="">
+                            {% if g.user['is_supervisor'] %}
+                                <span class="h3 pt-3 is_supervisor">{{ g.user['username'] }}</span>
+                            {% else %}
+                                <span class="h3 pt-3">{{ g.user['username'] }}</span>
+                            {% endif %}
+                        </div>
                     </div>
                 </div>
             </div>
         </div>
+
+        <!--
+        <div class="container-fluid">
+            <div class="row my-5">
+                <div class="col-lg-3"></div>
+                <div class="col-lg-5">
+                    <div class="pl-5">
+                        <h1 class=" text-header h1"></h1>
+                    </div>
+                </div>
+                <div class="col-lg-2">
+                    <div class="">
+
+
+                    </div>
+                </div>
+            </div>
+        </div>-->
     </div>
 </header>
 <div class="container">
@@ -97,7 +112,7 @@
             <a href="{{ url_for('scenes.scenes_add') }}">
                 <div class="card bg-components link-brown bg-nav my-3">
                     <div class="card-body h2 card-body text-center">
-                        <p class="">Přidat scénu</p>
+                        <p class="">Nová scéna</p>
                     </div>
                 </div>
             </a>
@@ -116,7 +131,9 @@
 <div class="container">
     {% block content %}{% endblock %}
 </div>
-
+<footer class="bg-components-dark mt-5">
+    patička
+</footer>
 </body>
 <script src="{{ url_for('static', filename='js/mqtt-socket.js') }}">
 
