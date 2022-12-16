@@ -3,35 +3,39 @@
 {% block title %}Přidání zařízení{% endblock %}
 
 {% block content %}
-    <form method="post">
-        <div class="form-group">
-            <label for="label">Název zařízení</label>
-            <input name="label" id="label" class="form-control" required>
-        </div>
-        <div class="form-group">
-            <label for="device_topic">adresa zařízení</label>
-            <input name="device_topic" id="device_topic" class="form-control"
-                   required>
-        </div>
+    <div class="row">
+        <div class="col-lg-12">
+            <form method="post">
+                <div class="form-group h3">
+                    <label for="label">Název zařízení</label>
+                    <input name="label" id="label" class="form-control" required>
+                </div>
+                <div class="form-group h3">
+                    <label for="device_topic">Adresa zařízení</label>
+                    <input name="device_topic" id="device_topic" class="form-control"
+                           required>
+                </div>
 
-        <div class="form-group form-check">
-            <input type="checkbox" id="is_active" name="is_active">
-            <label class="form-check-label">Je aktivní?</label>
-        </div>
+                <div class="form-group form-check h3">
+                    <input type="checkbox" id="is_active" name="is_active">
+                    <label class="form-check-label">Aktivní</label>
+                </div>
 
-        <div class="form-group">
-            {% if types %}
-                <label class="form-check-label">Typ</label>
-                <select name="types" class="form-control">
-                    {% for o in types %}
-                        <option value="{{ o.id }}">{{ o.label }}</option>
-                    {% endfor %}
-                </select>
-            {% endif %}
-        </div>
+                <div class="form-group h3">
+                    {% if types %}
+                        <label class="form-check-label">Typ</label>
+                        <select name="types" class="form-control">
+                            {% for o in types %}
+                                <option value="{{ o.id }}">{{ o.label }}</option>
+                            {% endfor %}
+                        </select>
+                    {% endif %}
+                </div>
 
-        <input type="submit" value="Přidat">
-    </form>
+                <button class="p-3 mr-3 btn btn-success float-right">Přidat</button>
+            </form>
+        </div>
+    </div>
     {% for message in get_flashed_messages() %}
         <div class="flash">{{ message }}</div>
     {% endfor %}

@@ -836,6 +836,28 @@ input[type="checkbox"] {
 
 }
 
+.btn-warning {
+    color: #212529;
+    background-color: #ffc107;
+}
+
+.btn-warning:hover {
+    color: #212529;
+    background-color: #e0a800;
+
+}
+
+.btn-success {
+    color: #fff;
+    background-color: #28a745;
+}
+
+.btn-success:hover {
+    color: #fff;
+    background-color: #218838;
+
+}
+
 .btn-delete {
     color: #fff;
     background-color: #F94C66;
