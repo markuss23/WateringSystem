@@ -60,7 +60,7 @@ def device(id):
 @login_required
 def devices_add():
     if g.user['is_supervisor'] != 1:
-        return redirect(url_for('devices'))
+        return redirect('/devices/')
     template_data = {
         'types': False,
     }
@@ -109,7 +109,7 @@ def devices_add():
 @login_required
 def devices_edit(id):
     if g.user['is_supervisor'] != 1:
-        return redirect(url_for('devices'))
+        return redirect('/devices/')
 
     conn = get_db_connection()
     template_data = {

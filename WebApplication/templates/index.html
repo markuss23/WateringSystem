@@ -4,7 +4,7 @@
 
 {% block content %}
 
-    <h2>Scény</h2>
+    <div class="square square-scenes mt-3"></div><h2 class="ml-4">Scény</h2>
     <hr/>
     <div class="row my-5">
         {% if scenes %}
@@ -22,9 +22,9 @@
             {% endfor %}
         {% endif %}
     </div>
-    <h2>Zařízení</h2>
+    <div class="square square-devices mt-3"></div><h2 class="ml-4">Zařízení</h2>
     <hr/>
-    <div class="row my-5">
+    <div class="row mt-5">
         {% if devices %}
             {% for device in devices %}
                 <div class="col-lg-4">

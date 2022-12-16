@@ -60,8 +60,8 @@ def handle_mqtt_message(client, userdata, message):
 
 @mqtt.on_log()
 def handle_logging(client, userdata, level, buf):
-    #print(level, buf)
-    pass
+    print(level, buf)
+
 
 
 @app.before_first_request

@@ -27,36 +27,34 @@
     <title>Přihlášení</title>
 </head>
 <body>
-
-
-    <div class="container my-5">
-        <div class="row">
-            <div class="col-12">
-                <div class="card p-5 bg-components">
-                    <form method="post">
-                        <div class="card-body text-center">
-                            <label for="username" class="h1"><strong>Uživatelské jméno</strong></label>
+<div class="container my-5">
+    <div class="row">
+        <div class="col-lg-12 m-5">
+            <div class="card p-5 bg-components">
+                <form method="post">
+                    <div class="card-body text-center">
+                        <label for="username" class="h1"><strong>Uživatelské jméno</strong></label>
+                    </div>
+                    <div class="card-body text-center">
+                        {% if users %}
+                            <select name="users" class="p-2 h4">
+                                {% for o in users %}
+                                    <option value="{{ o.id }}">{{ o.username }}</option>
+                                {% endfor %}
+                            </select>
+                        {% endif %}
+                    </div>
+                    <div class="card-body text-center h4">
+                        <div>
+                            <input type="text" name="pin" id="pincode-input1">
                         </div>
-                        <div class="card-body text-center">
-                            {% if users %}
-                                <select name="users" class="p-2 h4">
-                                    {% for o in users %}
-                                        <option value="{{ o.id }}">{{ o.username }}</option>
-                                    {% endfor %}
-                                </select>
-                            {% endif %}
-                        </div>
-                        <div class="card-body text-center h4">
-                            <div>
-                                <input type="text" name="pin" id="pincode-input1">
-                            </div>
-                        </div>
-                        <input class="ml-3 h4" type="submit" value="Log in">
-                    </form>
-                </div>
+                    </div>
+                    <input class="ml-3 h4 float-right" type="submit" value="Přihlásit se">
+                </form>
             </div>
         </div>
     </div>
+</div>
 
 
 </body>

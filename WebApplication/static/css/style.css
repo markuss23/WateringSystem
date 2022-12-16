@@ -853,6 +853,11 @@ input[type="checkbox"] {
     border-radius: 0.25rem;
 }
 
+.bg-components-dark {
+    background: #1d222a;
+    border-radius: 0.25rem;
+}
+
 .text-delete {
     color: #ff3737;
 }
@@ -873,14 +878,23 @@ input[type="checkbox"] {
     border-left: 5px solid #FF7000;
 }
 
+.is_supervisor {
+    color: #ff3737;
+    animation: blinker 3s linear infinite;
+}
+
+@keyframes blinker {
+    50% {
+        opacity: 0;
+    }
+}
+
 .dot {
     position: absolute;
     width: 10px;
     height: 10px;
-
     border-radius: 100%;
     left: 92%;
-
 }
 
 .dot-online {
@@ -889,6 +903,25 @@ input[type="checkbox"] {
 
 .dot-offline {
     background: gray;
+}
+
+.square {
+    position: absolute;
+    width: 15px;
+    height: 15px;
+    border-radius: 0.25rem;
+}
+
+.square-scenes {
+    background: #10A19D;
+}
+
+.square-devices {
+    background: #540375;
+}
+
+.square-types {
+    background: #FF7000;
 }
 
 
@@ -912,6 +945,10 @@ input[type="checkbox"] {
 .bottom-line {
     border-bottom-style: solid;
     border-bottom-color: white;
+}
+
+footer {
+    border-top: solid white 3px;
 }
 
 .card {
@@ -1072,13 +1109,3 @@ th {
     border-top: 2px solid #dee2e6;
 }
 
-.is_supervisor {
-    color: #ff3737;
-    animation: blinker 3s linear infinite;
-}
-
-@keyframes blinker {
-    50% {
-        opacity: 0;
-    }
-}

@@ -57,7 +57,7 @@ def scene(id):
 @login_required
 def scenes_add():
     if g.user['is_supervisor'] != 1:
-        return redirect(url_for('scenes'))
+        return redirect('/scenes/')
     try:
         if request.method == 'POST':
             label = request.form['label']
@@ -97,7 +97,7 @@ def scenes_add():
 @login_required
 def scenes_edit(id):
     if g.user['is_supervisor'] != 1:
-        return redirect(url_for('scenes'))
+        return redirect('/scenes/')
 
     conn = get_db_connection()
     template_data = {
@@ -150,7 +150,7 @@ def scenes_edit(id):
 def scenes_attach(id):
 
     if g.user['is_supervisor'] != 1:
-        return redirect(url_for('scenes'))
+        return redirect('/scenes/')
 
     template_data = {
         'scenes': False,
