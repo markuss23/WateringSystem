@@ -1,4 +1,4 @@
-broker_address = "broker.emqx.io"
+broker_address = "192.168.0.11"
 
 
 # broker.emqx.io

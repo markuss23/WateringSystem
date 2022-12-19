@@ -26,7 +26,7 @@
                     <th scope="col">#</th>
                     <th scope="col">Název</th>
                     <th scope="col">Adresa (topic)</th>
-                    <th scope="col">aktivní</th>
+                    <th scope="col">Aktivní</th>
                 </tr>
                 </thead>
                 <tbody>
@@ -45,7 +45,7 @@
         </div>
     </div>
 
-    <div class="row">
+    <div class="row mb-5">
         {% if g.user['is_supervisor'] == 1 %}
             {% if scenes %}
                 {% for scene in scenes %}
@@ -69,11 +69,10 @@
 
         {% endif %}
     </div>
-    <div class="">
-        <h2 class="mt-5">Přiřazený typ</h2>
-        <hr/>
-    </div>
+
     {% if devices %}
+        <div class="square square-devices mt-3"></div><h2 class=" ml-4">Přiřazené zařízení</h2>
+        <hr/>
         {% for device in devices %}
             <a href="{{ url_for('devices.device',id = device.id) }}">
                 <div class="col-lg-12 bg-components my-3 p-4 h3 bg-devices link-brown">

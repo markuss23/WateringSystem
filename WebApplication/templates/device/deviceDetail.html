@@ -25,7 +25,7 @@
                     <th scope="col">#</th>
                     <th scope="col">Název</th>
                     <th scope="col">Adresa (topic)</th>
-                    <th scope="col">aktivní</th>
+                    <th scope="col">Aktivní</th>
                     <th scope="col">Typ</th>
                 </tr>
                 </thead>
@@ -37,22 +37,20 @@
                             <td>{{ device.label }}</td>
                             <td id="topic">{{ device.device_topic }}</td>
                             <td>{{ device.is_active }}</td>
-                            <td><a href="/types/{{ device.type_id }}/">
-                                {% if types %}
-                                    {% for type in types %}
-                                        {{ type.label }}
-                                    {% endfor %}
-
-                                {% endif %}
-                            </a></td>
+                            {% if types %}
+                                {% for type in types %}
+                                    <td id="typ">{{ type.typ }}</td>
+                                {% endfor %}
+                            {% endif %}
                         {% endfor %}
                     {% endif %}
-
                 </tr>
                 </tbody>
             </table>
         </div>
     </div>
+
+
 
 
     <div class="row">
@@ -62,7 +60,7 @@
     </div>
 
 
-    <div class="row">
+    <div class="row mb-5">
         {% if g.user['is_supervisor'] == 1 %}
             {% if devices %}
                 {% for device in devices %}
@@ -81,8 +79,8 @@
         {% endif %}
     </div>
 
-    <h2 class="mt-5">Přiřazený typ</h2>
-    <hr />
+    <div class="square square-types mt-3"></div><h2 class="ml-4 ">Přiřazený typ</h2>
+    <hr/>
     {% if types %}
         {% for type in types %}
 
@@ -93,11 +91,11 @@
             </a>
         {% endfor %}
     {% endif %}
-    <h2 class="mt-5">Přiřazené zařízení</h2>
-    <hr />
-    {% if scenes %}
-        {% for scene in scenes %}
 
+    {% if scenes %}
+        <div class="square square-scenes mt-5"></div><h2 class=" ml-4 mt-5">Nachází se v scénách</h2>
+        <hr/>
+        {% for scene in scenes %}
             <a href="{{ url_for('scenes.scene',id = scene.id) }}">
                 <div class="col-lg-12 bg-components my-3 p-4 h3 bg-scenes link-brown">
                     {{ scene.label }}

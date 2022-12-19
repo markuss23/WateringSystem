@@ -27,17 +27,18 @@
     <title>Přihlášení</title>
 </head>
 <body>
-<div class="container my-5">
+<div class="container mt-5">
     <div class="row">
-        <div class="col-lg-12 m-5">
+        <div class="col-lg-4"></div>
+        <div class="col-lg-4 my-5">
             <div class="card p-5 bg-components">
                 <form method="post">
                     <div class="card-body text-center">
-                        <label for="username" class="h1"><strong>Uživatelské jméno</strong></label>
+                        <label for="username" class="h3"><strong>Uživatelské jméno</strong></label>
                     </div>
                     <div class="card-body text-center">
                         {% if users %}
-                            <select name="users" class="p-2 h4">
+                            <select name="users" class="p-2 h4 form-control">
                                 {% for o in users %}
                                     <option value="{{ o.id }}">{{ o.username }}</option>
                                 {% endfor %}
@@ -49,10 +50,11 @@
                             <input type="text" name="pin" id="pincode-input1">
                         </div>
                     </div>
-                    <input class="ml-3 h4 float-right" type="submit" value="Přihlásit se">
+                    <button class=" mr-3 btn btn-success h3 float-right">Přihlásit se</button>
                 </form>
             </div>
         </div>
+        <div class="col-lg-4"></div>
     </div>
 </div>
 

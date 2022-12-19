@@ -30,7 +30,7 @@
                     <th scope="col">Maximální</th>
                     <th scope="col">Interval Změny (ms)</th>
                     <th scope="col">Adresa (topic)</th>
-                    <th scope="col">aktivní</th>
+                    <th scope="col">Aktivní</th>
                 </tr>
                 </thead>
                 <tbody>
@@ -54,16 +54,37 @@
         </div>
     </div>
 
-    <h2 class="mt-5">Přiřazené zařízení</h2>
+    <div class="row mb-5">
+        {% if g.user['is_supervisor'] == 1 %}
+            {% if types %}
+                {% for type in types %}
+                    <a href="{{ url_for('types.types_edit',id = type.id) }}" class="col-lg-6">
+                        <div class=" bg-components my-3 p-4 h3 link-brown">
+                            Edit
+                        </div>
+                    </a>
+                    <a href="" class="col-lg-6">
+                        <div class=" bg-components-dark my-3 p-4 h3 link-brown text-delete">
+                            Delete
+                        </div>
+                    </a>
+                {% endfor %}
+            {% endif %}
+
+        {% endif %}
+    </div>
+
+    <div class="square square-devices mt-3"></div><h2 class=" ml-4">Přiřazené zařízení</h2>
     <hr/>
     {% if devices %}
         {% for device in devices %}
-            <div class="col-lg-12 bg-components my-3 p-4 h3 bg-devices">
-                <a href="/devices/{{ device.id }}/">{{ device.label }}</a>
-            </div>
+            <a href="{{ url_for('devices.device',id = device.id) }}">
+                <div class="col-lg-12 bg-components my-3 p-4 h3 bg-devices link-brown">
+                    {{ device.label }}
+                </div>
+            </a>
         {% endfor %}
     {% endif %}
-
 
 
 {% endblock %}
