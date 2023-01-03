@@ -10,9 +10,8 @@
 {% endblock %}
 
 {% block content %}
-
     <div class="row">
-        <div class="col-lg-12">
+        <div class="col-lg-12 mb-5">
             <h2>
                 {% if scenes %}
                     {% for scene in scenes %}
@@ -44,33 +43,69 @@
             </table>
         </div>
     </div>
-    <div class="row">
-        <div class="col-lg-4">
-            <form action="post"></form>
-        </div>
-    </div>
-    {% if devices %}
-        <div class="row">
-            <div class="col-lg-12 bg-components my-5">
-                <form method="post" class="text-center p-4">
-                    <div class="form-group">
-                        <h2>Výpis všech dostupných zařízení</h2>
-                        {% if devices %}
-                            <select name="devices_pair" class="p-2 form-control">
-                                {% for o in devices %}
-                                    <option value="{{ o.id }}">{{ o.label }}</option>
-                                {% endfor %}
-                            </select>
-                        {% endif %}
-                    </div>
-                    <div class="form-group form-check">
-                        <input type="checkbox" id="is_active" name="is_active">
-                        <label class="form-check-label">Je aktivní?</label>
-                    </div>
-                    <input type="submit" value="Přidat">
-                </form>
-            </div>
+    <div class="square square-devices mt-3"></div><h2 class=" ml-4">Kliknutím odpojit</h2>
+    <hr/>
+    {% if devices_connected %}
+        <div class="row mb-5">
+            {% for connected in devices_connected %}
+                <div class="col-lg-4">
+                    <form method="post" id="{{ connected.id }}">
+                        <a href="javascript:{}"
+                           onclick="document.getElementById('{{ connected.id }}').submit(); return false;">
+                            <div class="card bg-components link-brown bg-devices p-3 my-3">
+                                <div class="card-body h2 card-body text-center">
+                                    <p class="">{{ connected.label }}</p>
+                                    <input type="hidden" name="devices_pair" value="{{ connected.id }}"/>
+                                    <input type="hidden" name="is_active" value="1">
+                                    <input type="hidden" name="deactivate" value="deactivate">
+                                </div>
+                            </div>
+                        </a>
+                    </form>
+                </div>
+            {% endfor %}
         </div>
     {% endif %}
+    <div class="square square-devices mt-3"></div><h2 class=" ml-4">Dostupné zařízení k připojení</h2>
+    <hr/>
+    <div class="row mb-5">
+        {% if devices_available %}
+            {% for available in devices_available %}
+                <div class="col-lg-4">
+                    <form method="post" id="{{ available.id }}">
+                        <a href="javascript:{}"
+                           onclick="document.getElementById('{{ available.id }}').submit(); return false;">
+                            <div class="card bg-components link-brown bg-devices p-3 my-3">
+                                <div class="card-body h2 card-body text-center">
+                                    <p class="">{{ available.label }}</p>
+                                    <input type="hidden" name="devices_pair" value="{{ available.id }}"/>
+                                    <input type="hidden" name="is_active" value="1">
+                                </div>
+                            </div>
+                        </a>
+                    </form>
+                </div>
+            {% endfor %}
+        {% endif %}
+        {% if devices_deactivated %}
+            {% for deactivated in devices_deactivated %}
+                <div class="col-lg-4">
+                    <form method="post" id="{{ deactivated.id }}">
+                        <a href="javascript:{}"
+                           onclick="document.getElementById('{{ deactivated.id }}').submit(); return false;">
+                            <div class="card bg-components link-brown bg-devices p-3 my-3">
+                                <div class="card-body h2 card-body text-center">
+                                    <p class="">{{ deactivated.label }}</p>
+                                    <input type="hidden" name="devices_pair" value="{{ deactivated.id }}"/>
+                                    <input type="hidden" name="is_active" value="1">
+                                    <input type="hidden" name="activate" value="activate">
+                                </div>
+                            </div>
+                        </a>
+                    </form>
+                </div>
+            {% endfor %}
+        {% endif %}
+    </div>
 
 {% endblock %}
