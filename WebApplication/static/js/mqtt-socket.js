@@ -66,6 +66,7 @@ $(document).ready(function () {
             $('#publish').text("Nefunkční");
             $('#publish').addClass("bg-components-dark");
             $('#publish').removeClass("bg-components, link-brown");
+            $('#publish').disabled = true;
         }
     }
 
@@ -76,6 +77,7 @@ socket.on('mqtt_message', function (data) {
     textPayload = JSON.parse(localStorage.getItem('payload'));
     topic.splice(topic.length - 1, 0, data['topic']);
     removeDuplicates();
+
 
     let absent = text.filter(e => !topic.includes(e));
     if (absent.length > 1) {
@@ -95,6 +97,9 @@ socket.on('mqtt_message', function (data) {
             if (parseFloat(payload[i])) {
                 $('#publish').text(payload[i]);
             } else {
+                $('#publish').removeClass("bg-components-dark");
+                $('#publish').addClass("bg-components, link-brown");
+                $('#publish').disabled = false;
                 $('#publish').text(changeState(payload[i]));
             }
         }

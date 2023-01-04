@@ -189,17 +189,17 @@ def scenes_attach(id):
             (id,)).fetchall()
 
         devices_available = conn.execute(
-            "select * from device where (id not in (select device_id from scene_device where scene_id = ? ) and is_active = 1)",
+            "select * from device where (id not in (select device_id from scene_device where scene_id = ? ) and is_active = 1);",
             (id,)).fetchall()
-
+        conn.commit()
         devices_connected = conn.execute(
-            "select * from device where (id in (select device_id from scene_device where scene_id = ? and is_active = 1) and is_active = 1)",
+            "select * from device where (id in (select device_id from scene_device where scene_id = ? and is_active = 1) and is_active = 1);",
             (id,)).fetchall()
-
+        conn.commit()
         devices_deactivated = conn.execute(
-            "select * from device where (id = (select device_id from scene_device where is_active=0 and scene_id = ?));",
+            "select * from device where (id in (select device_id from scene_device where scene_id = ? and is_active = 0) and is_active = 1);",
             (id,)).fetchall()
-
+        conn.commit()
         template_data['scenes'] = scenes
         template_data['devices_available'] = devices_available
         template_data['devices_connected'] = devices_connected

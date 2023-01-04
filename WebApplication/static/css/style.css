@@ -876,7 +876,7 @@ input[type="checkbox"] {
 }
 
 .bg-components-dark {
-    background: #1d222a;
+    background: #101215;
     border-radius: 0.25rem;
 }
 
@@ -901,14 +901,7 @@ input[type="checkbox"] {
 }
 
 .is_supervisor {
-    color: #ff3737;
-    animation: blinker 3s linear infinite;
-}
-
-@keyframes blinker {
-    50% {
-        opacity: 0;
-    }
+    color: #fd4848;
 }
 
 .dot {
