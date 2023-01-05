@@ -70,9 +70,10 @@
         {% endif %}
     </div>
 
+    <div class="square square-devices mt-3"></div><h2 class=" ml-4">Přiřazené zařízení</h2>
+    <hr/>
     {% if devices %}
-        <div class="square square-devices mt-3"></div><h2 class=" ml-4">Přiřazené zařízení</h2>
-        <hr/>
+
         {% for device in devices %}
             <a href="{{ url_for('devices.device',id = device.id) }}">
                 <div class="col-lg-12 bg-components my-3 p-4 h3 bg-devices link-brown">

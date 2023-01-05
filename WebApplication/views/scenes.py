@@ -41,7 +41,7 @@ def scene(id):
             (id,)).fetchall()
 
         devices = conn.execute(
-            "select d.id, d.label, d.device_topic, d.is_active FROM device d JOIN scene_device sd ON d.id = sd.device_id JOIN scene s ON s.id = sd.scene_id WHERE s.id=?;",
+            "select d.id, d.label, d.device_topic, d.is_active FROM device d JOIN scene_device sd ON d.id = sd.device_id JOIN scene s ON s.id = sd.scene_id WHERE s.id=? and sd.is_active=1;",
             (id,)).fetchall()
 
         template_data['scenes'] = scenes
