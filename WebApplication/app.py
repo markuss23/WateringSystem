@@ -17,7 +17,7 @@ app.config['SESSION_TYPE'] = 'mqtt_session'
 app.config['MQTT_BROKER_URL'] = broker_address
 app.config['MQTT_BROKER_PORT'] = 1883
 app.config['MQTT_CLIENT_ID'] = 'flask_mqtt'
-app.config['MQTT_KEEPALIVE'] = 2
+app.config['MQTT_KEEPALIVE'] = 60
 app.debug = False
 mqtt = Mqtt(app)
 socketio = SocketIO(app)
@@ -60,8 +60,8 @@ def handle_mqtt_message(client, userdata, message):
 
 @mqtt.on_log()
 def handle_logging(client, userdata, level, buf):
-    print(level, buf)
-
+    #print(level, buf)
+    pass
 
 
 @app.before_first_request

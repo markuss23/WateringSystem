@@ -145,36 +145,41 @@ def scenes_edit(id):
 
     return render_template('scene/sceneEdit.html', **template_data)
 
+
 @bp.route('/<int:id>/attach/', methods=("POST", "GET"))
 @login_required
 def scenes_attach(id):
-
     if g.user['is_supervisor'] != 1:
         return redirect('/scenes/')
 
     template_data = {
         'scenes': False,
-        'devices': False,
+        'devices_available': False,
+        'devices_connected': False,
+        'devices_deactivated': False
     }
     conn = get_db_connection()
     try:
         if request.method == 'POST':
-
+            print("dotaz poslán")
             select = request.form.get('devices_pair')
             is_active = request.form.get('is_active')
-            if is_active is None:
-                is_active = 0
+            if request.form.get('deactivate'):
+                print("edit")
+                conn.execute("update scene_device set is_active = 0 where scene_id = ? AND device_id = ?;",
+                             (id, select))
+                conn.commit()
+                return redirect('/scenes/' + id + 'attach/')
+            elif request.form.get('activate'):
+                conn.execute("update scene_device set is_active = 1 where scene_id = ? AND device_id = ?;",
+                             (id, select))
+                conn.commit()
+                return redirect('/scenes/' + id + 'attach/')
             else:
-                is_active = 1
-            print("asd")
-            try:
                 conn.execute("INSERT INTO scene_device VALUES (NULL,?,?,?)",
                              (select, id, is_active))
                 conn.commit()
-            except conn.IntegrityError:
-                error = "chyba při zápisu"
-            else:
-                return redirect('/scenes/')
+                return redirect('/scenes/' + id + 'attach/')
     except:
         pass
 
@@ -182,12 +187,23 @@ def scenes_attach(id):
         scenes = conn.execute(
             "select * from scene where scene.id = ?",
             (id,)).fetchall()
-        devices = conn.execute(
-            "select * from device where (id not in (select device_id from scene_device where scene_id = ?) and is_active = 1)",
-            (id,)).fetchall()
 
+        devices_available = conn.execute(
+            "select * from device where (id not in (select device_id from scene_device where scene_id = ? ) and is_active = 1);",
+            (id,)).fetchall()
+        conn.commit()
+        devices_connected = conn.execute(
+            "select * from device where (id in (select device_id from scene_device where scene_id = ? and is_active = 1) and is_active = 1);",
+            (id,)).fetchall()
+        conn.commit()
+        devices_deactivated = conn.execute(
+            "select * from device where (id in (select device_id from scene_device where scene_id = ? and is_active = 0) and is_active = 1);",
+            (id,)).fetchall()
+        conn.commit()
         template_data['scenes'] = scenes
-        template_data['devices'] = devices
+        template_data['devices_available'] = devices_available
+        template_data['devices_connected'] = devices_connected
+        template_data['devices_deactivated'] = devices_deactivated
 
     except:
         pass
