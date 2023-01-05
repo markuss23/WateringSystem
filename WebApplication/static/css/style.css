@@ -1088,6 +1088,11 @@ form-check-input[disabled] ~ .form-check-label,
     border-left: #53BF9D 5px solid;
 }
 
+.float-right {
+    display:flex;
+    flex-direction: row;
+}
+
 .border-offline {
     border-left: grey 5px solid;
 }
