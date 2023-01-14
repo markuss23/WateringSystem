@@ -146,6 +146,29 @@ def scenes_edit(id):
     return render_template('scene/sceneEdit.html', **template_data)
 
 
+@bp.route('/<int:id>/', methods=("POST", "GET"))
+@login_required
+def scenes_delete(id):
+    if g.user['is_supervisor'] != 1:
+        return redirect('/scenes/')
+
+    try:
+        if request.method == 'POST':
+
+            conn = get_db_connection()
+            conn.execute('delete FROM scene where id=?;',
+                         (id,))
+            conn.commit()
+            conn.execute('delete from scene_device where scene_id = ?;',
+                         (id,))
+            conn.commit()
+            conn.close()
+            print(id)
+    except:
+        pass
+
+    return redirect('/scenes/')
+
 @bp.route('/<int:id>/attach/', methods=("POST", "GET"))
 @login_required
 def scenes_attach(id):

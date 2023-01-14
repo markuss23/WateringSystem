@@ -69,11 +69,13 @@
                             Edit
                         </div>
                     </a>
-                    <a href="" class="col-lg-6 ">
-                        <div class=" bg-components-dark my-3 p-4 h3 link-brown text-delete">
-                            Delete
-                        </div>
-                    </a>
+                    <div class="col-lg-6">
+                        <form method="post" onSubmit="return confirm('Opravdu chcete smazat toto zařízení?') " id="{{ device.id }}">
+                            <div >
+                                <input class=" bg-components-dark my-3 p-4 h3 link-brown text-delete" style="width: 100%; text-align: left; border: none;"  value="Smazat" type="submit" />
+                            </div>
+                        </form>
+                    </div>
                 {% endfor %}
             {% endif %}
         {% endif %}

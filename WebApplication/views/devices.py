@@ -8,6 +8,7 @@ from WebApplication.views.db import get_db_connection
 
 bp = Blueprint('devices', __name__, url_prefix='/devices')
 
+
 @bp.route('/')
 @login_required
 def devices():
@@ -88,7 +89,6 @@ def devices_add():
             if not device_topic:
                 error = 'Adresa chybí'
 
-
             if error is None:
                 try:
                     conn.execute("INSERT INTO device VALUES (NULL,?,?,?,?)",
@@ -165,3 +165,24 @@ def devices_edit(id):
     return render_template('device/deviceEdit.html', **template_data)
 
 
+@bp.route('/<int:id>/', methods=("POST", "GET"))
+@login_required
+def devices_delete(id):
+    if g.user['is_supervisor'] != 1:
+        return redirect('/devices/')
+
+    try:
+        if request.method == 'POST':
+            conn = get_db_connection()
+            conn.execute('delete FROM device where id=?;',
+                         (id,))
+            conn.commit()
+            conn.execute('delete from scene_device where device_id = ?;',
+                         (id,))
+            conn.commit()
+            conn.close()
+            print(id)
+    except:
+        pass
+
+    return redirect('/devices/')
