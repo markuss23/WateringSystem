@@ -29,6 +29,7 @@ def login_required(view):
             return redirect(url_for('auth.user_login'))
 
         return view(**kwargs)
+
     return wrapped_view
 
 
@@ -38,51 +39,41 @@ def user_add():
     if g.user['is_supervisor'] == 1:
 
         if request.method == 'POST':
-            numbers = [0, 0, 0, 0]
-            numbers2 = [0, 0, 0, 0]
             username = request.form['username']
-            numbers[0] = request.form['1']
-            numbers[1] = request.form['2']
-            numbers[2] = request.form['3']
-            numbers[3] = request.form['4']
-
-            numbers2[0] = request.form['11']
-            numbers2[1] = request.form['12']
-            numbers2[2] = request.form['13']
-            numbers2[3] = request.form['14']
-
-            pin = str(numbers[0]) + str(numbers[1]) + str(numbers[2]) + str(numbers[3])
-            pin2 = str(numbers2[0]) + str(numbers2[1]) + str(numbers2[2]) + str(numbers2[3])
+            pin = request.form['pin']
+            is_supervisor = request.form['is_supervisor']
             conn = get_db_connection()
             error = None
 
+            if is_supervisor is None:
+                is_supervisor = 0
+            else:
+                is_supervisor = 1
+
             if not username:
-                error = 'Username is required.'
+                error = 'Chybí jméno'
             elif not pin:
-                error = 'Pin is required.'
-            elif len(pin) > 4:
-                error = 'Pin je dlouhý'
+                error = 'Chybí pin'
             elif len(pin) < 4:
                 error = 'Pin je krátký'
-            elif pin != pin2:
-                error = 'Piny se neshodují'
-
+            elif len(pin) > 4:
+                error = 'Pin je dlouhý'
 
             if error is None:
                 try:
                     conn.execute(
-                        "INSERT INTO user (username, pin) VALUES (?, ?)",
-                        (username, generate_password_hash(pin)),
+                        "INSERT INTO user (username, pin, is_supervisor) VALUES (?, ?, ?)",
+                        (username, generate_password_hash(pin), is_supervisor),
                     )
                     conn.commit()
                 except conn.IntegrityError:
                     error = f"User {username} is already registered."
                 else:
-                    return redirect(url_for("main"))
+                    return redirect('/')
 
             flash(error)
     else:
-        return redirect(url_for("main"))
+        return redirect('/')
     return render_template('auth/userAdd.html')
 
 
@@ -108,6 +99,7 @@ def user_login():
         if error is None:
             session.clear()
             session['user_id'] = user['id']
+
             return redirect('/')
         flash(error)
 
@@ -126,9 +118,3 @@ def user_login():
 def user_logout():
     session.clear()
     return redirect(url_for('auth.user_login'))
-
-
-
-
-
-

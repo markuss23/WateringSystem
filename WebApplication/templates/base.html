@@ -42,7 +42,7 @@
                             <span class="h3 pt-3">{{ g.user['username'] }}</span>
                         {% endif %}
                         <span class="ml-4"><a href="{{ url_for('auth.user_logout') }}">
-                                <div class="card bg-components link-brown bg-nav ">
+                                <div class="card bg-components-logout link-brown bg-nav ">
                                     <span class="card-body h5 card-body text-center">
                                         <p class="h6">Odhlásit se</p>
                                     </span>
@@ -84,27 +84,37 @@
                 </div>
             </a>
         </div>
-        <div class="col-lg-4">
-
-        </div>
-        <div class="col-lg-4">
-            <a href="{{ url_for('scenes.scenes_add') }}">
-                <div class="card bg-components link-brown bg-nav my-3">
-                    <div class="card-body h2 card-body text-center">
-                        <p class="">Nová scéna</p>
-                    </div>
+        {% if g.user['is_supervisor'] %}
+            {% block navbar_extension %}
+                <div class="col-lg-4">
+                    <a href="{{ url_for('auth.user_add') }}">
+                        <div class="card bg-components link-brown bg-nav my-3">
+                            <div class="card-body h3 card-body text-center">
+                                <p class="">Nový uživatel</p>
+                            </div>
+                        </div>
+                    </a>
                 </div>
-            </a>
-        </div>
-        <div class="col-lg-4">
-            <a href="{{ url_for('devices.devices_add') }}">
-                <div class="card bg-components link-brown bg-nav my-3">
-                    <div class="card-body h2 card-body text-center">
-                        <p class="">Přidat zařízení</p>
-                    </div>
+                <div class="col-lg-4">
+                    <a href="{{ url_for('scenes.scenes_add') }}">
+                        <div class="card bg-components link-brown bg-nav my-3">
+                            <div class="card-body h3 card-body text-center">
+                                <p class="">Přidání nové scény</p>
+                            </div>
+                        </div>
+                    </a>
                 </div>
-            </a>
-        </div>
+                <div class="col-lg-4">
+                    <a href="{{ url_for('devices.devices_add') }}">
+                        <div class="card bg-components link-brown bg-nav my-3">
+                            <div class="card-body h3 card-body text-center">
+                                <p class="">Přidání nového zařízení</p>
+                            </div>
+                        </div>
+                    </a>
+                </div>
+            {% endblock %}
+        {% endif %}
     </div>
 </div>
 <div class="container">

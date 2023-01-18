@@ -66,13 +66,16 @@
                 {% for device in devices %}
                     <a href="{{ url_for('devices.devices_edit',id = device.id) }}" class="col-lg-6">
                         <div class=" bg-components my-3 p-4 h3 link-brown">
-                            Edit
+                            Upravit
                         </div>
                     </a>
                     <div class="col-lg-6">
-                        <form method="post" onSubmit="return confirm('Opravdu chcete smazat toto zařízení?') " id="{{ device.id }}">
-                            <div >
-                                <input class=" bg-components-dark my-3 p-4 h3 link-brown text-delete" style="width: 100%; text-align: left; border: none;"  value="Smazat" type="submit" />
+                        <form method="post" onSubmit="return confirm('Opravdu chcete smazat toto zařízení?') "
+                              id="{{ device.id }}">
+                            <div>
+                                <input class=" bg-components-dark my-3 p-4 h3 link-brown text-delete"
+                                       style="width: 100%; text-align: left; border: none;" value="Smazat"
+                                       type="submit"/>
                             </div>
                         </form>
                     </div>
@@ -81,7 +84,7 @@
         {% endif %}
     </div>
 
-    <div class="square square-types mt-3"></div><h2 class="ml-4 ">Přiřazený typ</h2>
+    <div class="square square-types mt-2"></div><h2 class="ml-5 ">Přiřazený typ</h2>
     <hr/>
     {% if types %}
         {% for type in types %}
@@ -95,15 +98,19 @@
     {% endif %}
 
     {% if scenes %}
-        <div class="square square-scenes mt-5"></div><h2 class=" ml-4 mt-5">Nachází se v scénách</h2>
-        <hr/>
-        {% for scene in scenes %}
-            <a href="{{ url_for('scenes.scene',id = scene.id) }}">
-                <div class="col-lg-12 bg-components my-3 p-4 h3 bg-scenes link-brown">
-                    {{ scene.label }}
-                </div>
-            </a>
-        {% endfor %}
+
+        <div class="mt-5">
+            <div class="square square-scenes mt-2"></div>
+            <h2 class=" ml-5">Nachází se v scénách</h2>
+            <hr/>
+            {% for scene in scenes %}
+                <a href="{{ url_for('scenes.scene',id = scene.id) }}">
+                    <div class="col-lg-12 bg-components my-3 p-4 h3 bg-scenes link-brown">
+                        {{ scene.label }}
+                    </div>
+                </a>
+            {% endfor %}
+        </div>
     {% endif %}
 
 

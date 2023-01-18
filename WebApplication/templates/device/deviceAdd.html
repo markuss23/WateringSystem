@@ -2,34 +2,30 @@
 
 {% block title %}Přidání zařízení{% endblock %}
 
-{% block content %}
-    <div class="row mb-5">
-        <div class="col-lg-12">
-            <div>
-                <div class="square square-types mt-3"></div>
-                <h2 class="ml-4">Typy</h2>
+{% block navbar_extension %}
+    <div class="col-lg-4">
+        <a href="{{ url_for('auth.user_add') }}">
+            <div class="card bg-components link-brown bg-nav my-3">
+                <div class="card-body h3 card-body text-center">
+                    <p class="">Nový uživatel</p>
+                </div>
             </div>
-            <hr/>
-        </div>
-        {% if g.user['is_supervisor'] == 1 %}
-            <a href="{{ url_for('types.types') }}" class="col-lg-6">
-                <div class=" bg-components my-3 p-4 h3 link-brown">
-                    Všechny typy
-                </div>
-            </a>
-            <a href="{{ url_for('types.types_add') }}" class="col-lg-6">
-                <div class=" bg-components my-3 p-4 h3 link-brown">
-                    Přidat typ
-                </div>
-            </a>
-        {% else %}
-            <a href="{{ url_for('types.types') }}" class="col-lg-6">
-                <div class=" bg-components my-3 p-4 h3 link-brown">
-                    Všechny typy
-                </div>
-            </a>
-        {% endif %}
+        </a>
     </div>
+    <div class="col-lg-4">
+        <a href="{{ url_for('scenes.scenes_add') }}">
+            <div class="card bg-components link-brown bg-nav my-3">
+                <div class="card-body h3 card-body text-center">
+                    <p class="">Přidání nové scény</p>
+                </div>
+            </div>
+        </a>
+    </div>
+    <div class="col-lg-4">
+    </div>
+{% endblock %}
+
+{% block content %}
     <div class="row">
         <div class="col-lg-12">
             <form method="post">
@@ -48,18 +44,31 @@
                     <label class="form-check-label">Aktivní</label>
                 </div>
 
-                <div class="form-group h3">
-                    {% if types %}
-                        <label class="form-check-label">Typ</label>
-                        <select name="types" class="form-control">
-                            {% for o in types %}
-                                <option value="{{ o.id }}">{{ o.label }}</option>
-                            {% endfor %}
-                        </select>
+                <div class="row">
+                    <div class="col-lg-4">
+                        <div class="form-group h3">
+                            {% if types %}
+                                <label class="form-check-label">Typ</label>
+                                <select name="types" class="form-control">
+                                    {% for o in types %}
+                                        <option value="{{ o.id }}">{{ o.label }}</option>
+                                    {% endfor %}
+                                </select>
+                            {% endif %}
+                        </div>
+                    </div>
+                    {% if g.user['is_supervisor'] == 1 %}
+
+                        <a href="{{ url_for('types.types_add') }}" class="col-lg-8">
+                            <div class=" bg-components my-3 p-4 h3 link-brown">
+                                Přidat typ
+                            </div>
+                        </a>
                     {% endif %}
                 </div>
 
-                <button class="p-3 mr-3 btn btn-success float-right">Přidat</button>
+
+                <button class="p-3 mr-3 px-4 py-3 btn btn-success float-right">Přidat</button>
             </form>
         </div>
     </div>

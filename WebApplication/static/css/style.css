@@ -880,6 +880,11 @@ input[type="checkbox"] {
     border-radius: 0.25rem;
 }
 
+.bg-components-logout {
+    background: #1d2731;
+    border-radius: 0.25rem;
+}
+
 .text-delete {
     color: #ff3737;
 }
@@ -922,8 +927,8 @@ input[type="checkbox"] {
 
 .square {
     position: absolute;
-    width: 15px;
-    height: 15px;
+    width: 23px;
+    height: 23px;
     border-radius: 0.25rem;
 }
 
