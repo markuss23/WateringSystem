@@ -1,15 +1,12 @@
 import json
 import eventlet
-import datetime
-
 
 from flask import Flask, redirect
 from WebApplication.views.mqtt_connector import broker_address
 from flask_mqtt import Mqtt
 from flask_socketio import SocketIO
 from WebApplication.views.db import get_db_connection
-from WebApplication.views.scheduler import set_scheduler
-
+from WebApplication.views.scheduler import run_cron
 eventlet.monkey_patch()
 
 app = Flask(__name__)
@@ -23,7 +20,7 @@ app.debug = False
 mqtt = Mqtt(app)
 socketio = SocketIO(app)
 socketio.run(app)
-scheduler = set_scheduler()
+
 
 @socketio.on('publish')
 def handle_publish(json_str):
@@ -65,14 +62,10 @@ def handle_logging(client, userdata, level, buf):
     pass
 
 
-def my_job(text):
-    print(text, str(datetime.datetime.now()))
-
-
 @app.before_first_request
 def load_devices():
-    scheduler.add_job(func=my_job, args=['job run'], trigger='interval', id='job', seconds=1)
-    scheduler.start()
+    run_cron()
+
     conn = get_db_connection()
 
     devices = conn.execute("select device_topic from device where is_active=1").fetchall()
