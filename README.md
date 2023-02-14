@@ -14,11 +14,13 @@
     -   id
     -   nazev rutiny
     -   popisek (co má dělat)
-    -   id_zarizení
+    -   id_device
     -   every_day
     -   every_month
     -   time_start
     -   time_stop
+    -   data_start
+    -   data_end
     -   is_active
     
     ------
