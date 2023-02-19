@@ -6,7 +6,8 @@ from WebApplication.views.mqtt_connector import broker_address
 from flask_mqtt import Mqtt
 from flask_socketio import SocketIO
 from WebApplication.views.db import get_db_connection
-from WebApplication.views.scheduler import run_cron
+from WebApplication.views.scheduler import get_scheduler
+
 eventlet.monkey_patch()
 
 app = Flask(__name__)
@@ -20,6 +21,11 @@ app.debug = False
 mqtt = Mqtt(app)
 socketio = SocketIO(app)
 socketio.run(app)
+scheduler = get_scheduler()
+
+job_array = {
+
+}
 
 
 @socketio.on('publish')
@@ -62,12 +68,74 @@ def handle_logging(client, userdata, level, buf):
     pass
 
 
-@app.before_first_request
-def load_devices():
-    run_cron()
+def send_mqtt_message(job):
+    mqtt.publish(job[1], job[2])
 
+
+def run_job(job):
+    send_mqtt_message(job)
+
+
+with app.app_context():
     conn = get_db_connection()
 
+    try:
+        routines = conn.execute(
+            "select r.id, d.device_topic, r.data, r.label, r.day_of_week, r.hour, r.minute, r.second from routine as r inner join device d on d.id = r.device_id where r.is_active = 1").fetchall()
+        for job in routines:
+            if job[4] == "":
+                scheduler.add_job(
+                    run_job,
+                    'cron',
+                    hour=job[5],
+                    minute=job[6],
+                    second=job[7],
+                    args=[job]
+                )
+            elif job[5] == "":
+                scheduler.add_job(
+                    run_job,
+                    'cron',
+                    day_of_week=job[4],
+                    minute=job[6],
+                    second=job[7],
+                    args=[job]
+                )
+            elif job[6] == "":
+                scheduler.add_job(
+                    run_job,
+                    'cron',
+                    day_of_week=job[4],
+                    hour=job[5],
+                    second=job[7],
+                    args=[job]
+                )
+            elif job[7] == "":
+                scheduler.add_job(
+                    run_job,
+                    'cron',
+                    day_of_week=job[4],
+                    hour=job[5],
+                    minute=job[6],
+                    args=[job]
+                )
+            else:
+                scheduler.add_job(
+                    run_job,
+                    'cron',
+                    day_of_week=job[4],
+                    hour=job[5],
+                    minute=job[6],
+                    second=job[7],
+                    args=[job]
+                )
+    except:
+        pass
+scheduler.start()
+
+
+@app.before_first_request
+def load_devices():
     devices = conn.execute("select device_topic from device where is_active=1").fetchall()
     for i in range(len(devices)):
         data = {
