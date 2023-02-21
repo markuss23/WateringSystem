@@ -1,0 +1,42 @@
+{% extends 'base.html' %}
+
+
+{% block title %}
+    {% if label %}
+        {{ label }}
+    {% endif %}
+{% endblock %}
+
+{% block content %}
+    <div class="square square-routines mt-2"></div><h2 class="ml-5">Služby</h2>
+    <hr/>
+    <div class="row mt-5">
+        {% if routines %}
+            {% for routine in routines %}
+                {% if routine.is_active == 1 %}
+                    <div class="col-lg-4">
+                        <a href="{{ url_for('routines.routine',id = routine.id)}}">
+                            <div class="card bg-components link-brown bg-routines p-3 my-3">
+                                <span class="dot dot-online"></span>
+                                <div class="card-body h2 card-body text-center">
+                                    <p class="">{{ routine.label }}</p>
+                                </div>
+                            </div>
+                        </a>
+                    </div>
+                {% else %}
+                    <div class="col-lg-4">
+                        <a href="{{ url_for('routines.routine',id = routine.id)}}">
+                            <div class="card bg-components link-brown bg-routines p-3 my-3">
+                                <span class="dot dot-offline"></span>
+                                <div class="card-body h2 card-body text-center">
+                                    <p class="">{{ routine.label }}</p>
+                                </div>
+                            </div>
+                        </a>
+                    </div>
+                {% endif %}
+            {% endfor %}
+        {% endif %}
+    </div>
+{% endblock %}

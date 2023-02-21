@@ -129,9 +129,9 @@ with app.app_context():
                     second=job[7],
                     args=[job]
                 )
+        scheduler.start()
     except:
         pass
-scheduler.start()
 
 
 @app.before_first_request
@@ -174,6 +174,10 @@ app.register_blueprint(devices.bp)
 from views import types
 
 app.register_blueprint(types.bp)
+
+from views import routines
+
+app.register_blueprint(routines.bp)
 
 if __name__ == '__main__':
     socketio.run(app, host='0.0.0.0', port=5000, use_reloader=False, debug=True, allow_unsafe_werkzeug=True)

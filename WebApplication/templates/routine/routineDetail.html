@@ -1,0 +1,101 @@
+{% extends 'base.html' %}
+
+
+{% block title %}
+    {% if routines %}
+        {% for routine in routines %}
+            Služba: {{ routine.label }}
+        {% endfor %}
+    {% endif %}
+{% endblock %}
+
+{% block content %}
+
+    <div class="row">
+        <div class="col-lg-12 ">
+            <h2>
+                {% if routines %}
+                    {% for routine in routines %}
+                        {{ routine.label }}
+                    {% endfor %}
+                {% endif %}
+            </h2>
+            <table class="table table-dark h3 bg-components-dark">
+                <thead>
+                <tr>
+                    <th scope="col">#</th>
+                    <th scope="col">Název</th>
+                    <th scope="col">Dny v týdnu</th>
+                    <th scope="col">Hodina</th>
+                    <th scope="col">Minuta</th>
+                    <th scope="col">Sekunda</th>
+                    <th scope="col">Data</th>
+                    <th scope="col">Aktivní</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr>
+                    {% if routines %}
+                        {% for routine in routines %}
+                            <th scope="row">{{ routine.id }}</th>
+                            <td>{{ routine.label }}</td>
+                            <td>{{ routine.day_of_week }}</td>
+                            <td>{{ routine.hour }}</td>
+                            <td>{{ routine.minute }}</td>
+                            <td>{{ routine.second }}</td>
+                            <td>{{ routine.data }}</td>
+                            <td>{{ routine.is_active }}</td>
+                        {% endfor %}
+                    {% endif %}
+                </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <div class="row mb-5">
+        {% if g.user['is_supervisor'] == 1 %}
+            {% if routines %}
+                {% for routine in routines %}
+                    <a href="{{ url_for('routines.routines_edit',id = routine.id) }}" class="col-lg-6">
+                        <div class=" bg-components my-3 p-4 h3 link-brown">
+                            Upravit
+                        </div>
+                    </a>
+                    <div class="col-lg-6">
+                        <form method="post" onSubmit="return confirm('Opravdu chcete smazat tuto službu?') " id="{{ routine.id }}">
+                            <div >
+                                <input class=" bg-components-dark my-3 p-4 h3 link-brown text-delete" style="width: 100%; text-align: left; border: none;"  value="Smazat" type="submit" />
+                            </div>
+                        </form>
+                    </div>
+                {% endfor %}
+            {% endif %}
+        {% endif %}
+    </div>
+
+    <div class="square square-devices mt-2"></div><h2 class=" ml-5">Služba pro zařízení</h2>
+    <hr/>
+    {% if devices %}
+        {% for device in devices %}
+            <a href="{{ url_for('devices.device',id = device.id) }}">
+                <div class="col-lg-12 bg-components my-3 p-4 h3 bg-devices link-brown">
+                    {{ device.label }}
+                </div>
+            </a>
+        {% endfor %}
+    {% endif %}
+    <div class="mt-5"></div>
+    <div class="square square-scenes mt-2"></div><h2 class=" ml-5">Přiřazeno pro scénu</h2>
+    <hr/>
+    {% if scenes %}
+        {% for scene in scenes %}
+            <a href="{{ url_for('scenes.scene',id = scene.id) }}">
+                <div class="col-lg-12 bg-components my-3 p-4 h3 bg-scenes link-brown">
+                    {{ scene.label }}
+                </div>
+            </a>
+        {% endfor %}
+    {% endif %}
+
+{% endblock %}

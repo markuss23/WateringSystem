@@ -905,6 +905,10 @@ input[type="checkbox"] {
     border-left: 5px solid #FF7000;
 }
 
+.bg-routines{
+    border-left: 5px solid #F94C66;
+}
+
 .is_supervisor {
     color: #fd4848;
 }
@@ -942,6 +946,10 @@ input[type="checkbox"] {
 
 .square-types {
     background: #FF7000;
+}
+
+.square-routines{
+    background: #F94C66;
 }
 
 

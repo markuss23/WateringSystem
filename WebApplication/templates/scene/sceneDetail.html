@@ -76,7 +76,6 @@
     <div class="square square-devices mt-2"></div><h2 class=" ml-5">Přiřazené zařízení</h2>
     <hr/>
     {% if devices %}
-
         {% for device in devices %}
             <a href="{{ url_for('devices.device',id = device.id) }}">
                 <div class="col-lg-12 bg-components my-3 p-4 h3 bg-devices link-brown">
