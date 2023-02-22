@@ -69,6 +69,7 @@ def handle_logging(client, userdata, level, buf):
 
 
 def send_mqtt_message(job):
+    print(job[0])
     mqtt.publish(job[1], job[2])
 
 

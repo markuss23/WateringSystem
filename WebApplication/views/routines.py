@@ -63,128 +63,153 @@ def routine(id):
 @login_required
 def routines_add():
     if g.user['is_supervisor'] != 1:
-        return redirect('/devices/')
+        return redirect('/routines/')
     template_data = {
-        'types': False,
+        'devices': False,
     }
     conn = get_db_connection()
 
-    types = conn.execute("select * from type")
-    template_data['types'] = types
+    devices = conn.execute("select * from device where is_active=1")
+    template_data['devices'] = devices
 
     try:
         if request.method == 'POST':
             label = request.form['label']
-            device_topic = request.form['device_topic']
+            device = request.form.get('devices')
+            data = request.form['data']
+            days = request.form.getlist('day')
+            hours = request.form.get('hours')
+            minutes = request.form.get('minutes')
+            seconds = request.form.get('seconds')
             is_active = request.form.get('is_active')
-            select = request.form.get('types')
-
+            days_final = ''
             if is_active is None:
                 is_active = 0
             else:
                 is_active = 1
-
+            if days[0] == '*':
+                days_final = '*'
+            else:
+                for day in days:
+                    days_final = days_final + day + ','
+            if days_final[len(days_final) - 1] == ',':
+                days_final = days_final[:-1]
+            print(device)
+            print(days_final)
             error = None
 
             if not label:
-                error = 'Název scény chybí'
-            if not device_topic:
-                error = 'Adresa chybí'
+                error = 'Název služby chybí'
+            if not data:
+                error = 'Data chybí'
 
             if error is None:
                 try:
-                    conn.execute("INSERT INTO device VALUES (NULL,?,?,?,?)",
-                                 (select, label, device_topic, is_active))
+                    conn.execute("INSERT INTO routine VALUES (NULL,?,?,?,?,?,?,?,?)",
+                                 (label, device, days_final, hours, minutes, is_active, data, seconds))
                     conn.commit()
                 except conn.IntegrityError:
                     error = f" Tato adresa již existuje "
                 else:
-                    return redirect('/devices/')
+                    return redirect('/routines/')
             flash(error)
     except:
         pass
 
-    return render_template('device/deviceAdd.html', **template_data)
+    return render_template('routine/routineAdd.html', **template_data)
 
 
 @bp.route('/<int:id>/edit/', methods=("POST", "GET"))
 @login_required
 def routines_edit(id):
     if g.user['is_supervisor'] != 1:
-        return redirect('/devices/')
+        return redirect('/routines/')
 
     conn = get_db_connection()
     template_data = {
-        'datas': False,
-        'types': False
+        'routines': False,
+        'devices': False
     }
 
     try:
         if request.method == 'POST':
             label = request.form['label']
-            device_topic = request.form['device_topic']
+            device = request.form.get('devices')
+            data = request.form['data']
+            days = request.form.getlist('day')
+            hours = request.form.get('hours')
+            minutes = request.form.get('minutes')
+            seconds = request.form.get('seconds')
             is_active = request.form.get('is_active')
-            select = request.form.get('types')
-
+            days_final = ''
             if is_active is None:
                 is_active = 0
             else:
                 is_active = 1
+            if days[0] == '*':
+                days_final = '*'
+            else:
+                for day in days:
+                    days_final = days_final + day + ','
+            if days_final[len(days_final) - 1] == ',':
+                days_final = days_final[:-1]
+            print(device)
+            print(days_final)
             error = None
 
             if not label:
-                error = 'Název scény chybí'
-            if not device_topic:
-                error = 'Adresa chybí'
+                error = 'Název služby chybí'
+            if not data:
+                error = 'Data chybí'
 
             print(error)
             if error is None:
                 try:
                     conn.execute(
-                        "UPDATE device SET type_id=?, label = ?, device_topic = ?, is_active = ? WHERE device.id = ?",
-                        (select, label, device_topic, is_active, id))
+                        "UPDATE routine SET label=?, device_id = ?, day_of_week = ?, hour = ?, minute = ?, is_active = ?, data = ?, second = ?  WHERE routine.id = ?",
+                        (label, device, days_final, hours, minutes, is_active, data, seconds, id))
                     conn.commit()
+                    conn.close()
                     print("asd")
                 except error:
                     error = "chyba při zapsání do Databáze"
                 else:
-                    return redirect('/devices/')
+                    return redirect('/routines/')
             flash(error)
     except:
         pass
 
     try:
-        datas = conn.execute("select * from device as s where s.id = ?",
+        routines = conn.execute("select * from routine as r where r.id = ?",
                              (id,)).fetchall()
 
-        types = conn.execute("select * from type")
+        devices = conn.execute("select * from device where is_active = 1")
 
-        template_data['datas'] = datas
-        template_data['types'] = types
+        template_data['routines'] = routines
+        template_data['devices'] = devices
     except:
         pass
 
-    return render_template('device/deviceEdit.html', **template_data)
+    return render_template('routine/routineEdit.html', **template_data)
 
 
 @bp.route('/<int:id>/', methods=("POST", "GET"))
 @login_required
 def routines_delete(id):
     if g.user['is_supervisor'] != 1:
-        return redirect('/devices/')
+        return redirect('/routines/')
 
     try:
         if request.method == 'POST':
             conn = get_db_connection()
-            conn.execute('delete FROM device where id=?;',
+            conn.execute('delete FROM routine where id=?;',
                          (id,))
             conn.commit()
-            conn.execute('delete from scene_device where device_id = ?;',
+            conn.execute('delete from scene_routine where routine_id = ?;',
                          (id,))
             conn.commit()
             conn.close()
-            print(id)
     except:
         pass
 
-    return redirect('/devices/')
+    return redirect('/routines/')

@@ -1,0 +1,88 @@
+{% extends 'base.html' %}
+
+{% block title %}Vytvoření služby{% endblock %}
+
+
+{% block content %}
+    <div class="row">
+        <div class="col-lg-12">
+            <form method="post">
+                <div class="form-group h3">
+                    <label for="label">Název služby</label>
+                    <input name="label" id="label" class="form-control" required>
+                </div>
+                <div class="form-group h3">
+                    {% if devices %}
+                        <label class="form-check-label">Zařízení</label>
+                        <select name="devices" class="form-control">
+                            {% for o in devices %}
+                                <option value="{{ o.id }}">{{ o.label }}</option>
+                            {% endfor %}
+                        </select>
+                    {% endif %}
+                </div>
+                <div class="form-group h3">
+                    <label for="data">Data</label>
+                    <input name="data" id="data" class="form-control" required>
+                </div>
+                <div class="form-group h3">
+                    <label for="label">Každý den</label>
+                    <input type="checkbox" name="day" id="*" value="*">
+                    <label for="label">Pondělí</label>
+                    <input type="checkbox" name="day" id="mon" value="mon">
+                    <label for="label">Úterý</label>
+                    <input type="checkbox" name="day" id="tue" value="tue">
+                    <label for="label">Středa</label>
+                    <input type="checkbox" name="day" id="wed" value="wed">
+                    <label for="label">Čtvrtek</label>
+                    <input type="checkbox" name="day" id="thu" value="thu">
+                    <label for="label">Pátek</label>
+                    <input type="checkbox" name="day" id="fri" value="fri">
+                    <label for="label">Sobota</label>
+                    <input type="checkbox" name="day" id="sat" value="sat">
+                    <label for="label">Neděle</label>
+                    <input type="checkbox" name="day" id="sun" value="sun">
+                </div>
+                <div class="form-group h3">
+                    <label for="label">Čas</label>
+                    <select name="hours" id="hours">
+                        <option value="*">Každou hodinu</option>
+                        <option value="">Neuvedeno</option>
+                        <option value="0">0</option>
+                        <option value="1">1</option>
+                        <option value="2">2</option>
+                        <option value="3">3</option>
+                    </select>
+                    :
+                    <select name="minutes" id="minutes">
+                        <option value="*">Každou minutu</option>
+                        <option value="">Neuvedeno</option>
+                        <option value="0">0</option>
+                        <option value="5">5</option>
+                        <option value="10">10</option>
+                        <option value="15">15</option>
+                    </select>
+                    :
+                    <select name="seconds" id="seconds">
+                        <option value="*">Každou sekundu</option>
+                        <option value="">Neuvedeno</option>
+                        <option value="0">0</option>
+                        <option value="1">1</option>
+                        <option value="2">2</option>
+                        <option value="3">3</option>
+                    </select>
+                </div>
+                <div class="form-group form-check h3">
+                    <input type="checkbox" id="is_active" name="is_active">
+                    <label class="form-check-label ">Aktivní</label>
+                </div>
+                <div class="">
+                    <button class="p-3 mr-3 px-4 py-3 btn btn-success float-right">Přidat</button>
+                </div>
+            </form>
+        </div>
+    </div>
+    {% for message in get_flashed_messages() %}
+        <div class="flash">{{ message }}</div>
+    {% endfor %}
+{% endblock %}
