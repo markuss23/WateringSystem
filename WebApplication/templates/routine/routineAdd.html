@@ -21,55 +21,29 @@
                         </select>
                     {% endif %}
                 </div>
+                <div class="form-group h5">
+                    <div id="weekdays" onclick="getIndexDays()"></div>
+                    <input type="hidden" value="" id="days" name="days">
+                </div>
                 <div class="form-group h3">
                     <label for="data">Data</label>
                     <input name="data" id="data" class="form-control" required>
-                </div>
-                <div class="form-group h3">
-                    <label for="label">Každý den</label>
-                    <input type="checkbox" name="day" id="*" value="*">
-                    <label for="label">Pondělí</label>
-                    <input type="checkbox" name="day" id="mon" value="mon">
-                    <label for="label">Úterý</label>
-                    <input type="checkbox" name="day" id="tue" value="tue">
-                    <label for="label">Středa</label>
-                    <input type="checkbox" name="day" id="wed" value="wed">
-                    <label for="label">Čtvrtek</label>
-                    <input type="checkbox" name="day" id="thu" value="thu">
-                    <label for="label">Pátek</label>
-                    <input type="checkbox" name="day" id="fri" value="fri">
-                    <label for="label">Sobota</label>
-                    <input type="checkbox" name="day" id="sat" value="sat">
-                    <label for="label">Neděle</label>
-                    <input type="checkbox" name="day" id="sun" value="sun">
                 </div>
                 <div class="form-group h3">
                     <label for="label">Čas</label>
                     <select name="hours" id="hours">
                         <option value="*">Každou hodinu</option>
                         <option value="">Neuvedeno</option>
-                        <option value="0">0</option>
-                        <option value="1">1</option>
-                        <option value="2">2</option>
-                        <option value="3">3</option>
                     </select>
                     :
                     <select name="minutes" id="minutes">
                         <option value="*">Každou minutu</option>
                         <option value="">Neuvedeno</option>
-                        <option value="0">0</option>
-                        <option value="5">5</option>
-                        <option value="10">10</option>
-                        <option value="15">15</option>
                     </select>
                     :
                     <select name="seconds" id="seconds">
                         <option value="*">Každou sekundu</option>
                         <option value="">Neuvedeno</option>
-                        <option value="0">0</option>
-                        <option value="1">1</option>
-                        <option value="2">2</option>
-                        <option value="3">3</option>
                     </select>
                 </div>
                 <div class="form-group form-check h3">
@@ -85,4 +59,47 @@
     {% for message in get_flashed_messages() %}
         <div class="flash">{{ message }}</div>
     {% endfor %}
+    <script>
+        $(function () {
+            $('#weekdays').weekdays({
+                days: ["Každý den", "Pondělí", "Úterý", "Středa", "Čtvrtej", "Pátek", "Sobota", "Neděle"]
+            });
+        });
+
+        function getIndexDays() {
+            let indexes = $('#weekdays').selectedIndexes();
+            let array = [];
+            for (const index of indexes) {
+                array.push(index);
+            }
+            $('#days').val(array);
+        }
+
+        /*
+        $('.timepicker').timepicker({
+            timeFormat: 'HH:mm:ss',
+            minTime: '10',
+            interval: 1,
+            defaultTime: '11:00:00',
+            dynamic: false,
+            dropdown: true,
+            scrollbar: true
+        });*/
+
+    </script>
+    <script>
+        for (let i = 0; i <= 24; i++) {
+            $("#hours").append(new Option(i, i));
+
+        }
+        for (let i = 0; i <= 60; i++) {
+            $("#minutes").append(new Option(i, i));
+
+        }
+
+        for (let i = 0; i <= 60; i++) {
+            $("#seconds").append(new Option(i, i));
+
+        }
+    </script>
 {% endblock %}
