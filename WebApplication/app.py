@@ -1,16 +1,20 @@
 import json
+import logging
+
 import eventlet
+from eventlet import wsgi
+
+eventlet.monkey_patch()
 
 from flask import Flask, redirect
 from WebApplication.views.mqtt_connector import broker_address
 from flask_mqtt import Mqtt
 from flask_socketio import SocketIO
 from WebApplication.views.db import get_db_connection
-from WebApplication.views.scheduler import get_scheduler
-
-eventlet.monkey_patch()
 
 app = Flask(__name__)
+log = logging.getLogger('werkzeug')
+log.disabled = True
 app.secret_key = "super secret key"
 app.config['SESSION_TYPE'] = 'mqtt_session'
 app.config['MQTT_BROKER_URL'] = broker_address
@@ -20,12 +24,8 @@ app.config['MQTT_KEEPALIVE'] = 60
 app.debug = False
 mqtt = Mqtt(app)
 socketio = SocketIO(app)
-socketio.run(app)
-scheduler = get_scheduler()
 
-job_array = {
-
-}
+conn = get_db_connection()
 
 
 @socketio.on('publish')
@@ -66,73 +66,6 @@ def handle_mqtt_message(client, userdata, message):
 def handle_logging(client, userdata, level, buf):
     # print(level, buf)
     pass
-
-
-def send_mqtt_message(job):
-    print(job[0])
-    mqtt.publish(job[1], job[2])
-
-
-def run_job(job):
-    send_mqtt_message(job)
-
-
-with app.app_context():
-    conn = get_db_connection()
-
-    try:
-        routines = conn.execute(
-            "select r.id, d.device_topic, r.data, r.label, r.day_of_week, r.hour, r.minute, r.second from routine as r inner join device d on d.id = r.device_id where r.is_active = 1").fetchall()
-        for job in routines:
-            if job[4] == "":
-                scheduler.add_job(
-                    run_job,
-                    'cron',
-                    hour=job[5],
-                    minute=job[6],
-                    second=job[7],
-                    args=[job]
-                )
-            elif job[5] == "":
-                scheduler.add_job(
-                    run_job,
-                    'cron',
-                    day_of_week=job[4],
-                    minute=job[6],
-                    second=job[7],
-                    args=[job]
-                )
-            elif job[6] == "":
-                scheduler.add_job(
-                    run_job,
-                    'cron',
-                    day_of_week=job[4],
-                    hour=job[5],
-                    second=job[7],
-                    args=[job]
-                )
-            elif job[7] == "":
-                scheduler.add_job(
-                    run_job,
-                    'cron',
-                    day_of_week=job[4],
-                    hour=job[5],
-                    minute=job[6],
-                    args=[job]
-                )
-            else:
-                scheduler.add_job(
-                    run_job,
-                    'cron',
-                    day_of_week=job[4],
-                    hour=job[5],
-                    minute=job[6],
-                    second=job[7],
-                    args=[job]
-                )
-        scheduler.start()
-    except:
-        pass
 
 
 @app.before_first_request

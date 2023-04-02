@@ -5,8 +5,33 @@ from werkzeug.exceptions import abort
 
 from WebApplication.views.auth import login_required
 from WebApplication.views.db import get_db_connection
+from WebApplication.views.scheduler import connect_cron
 
 bp = Blueprint('routines', __name__, url_prefix='/routines')
+
+
+def getDays(arr):
+    days = arr.split(",")
+    prep = ""
+    for day in days:
+        if day == "0":
+            return "*"
+        else:
+            if day == "1":
+                prep += "mon,"
+            elif day == "2":
+                prep += "tue,"
+            elif day == "3":
+                prep += "wed,"
+            elif day == "4":
+                prep += "thu,"
+            elif day == "5":
+                prep += "fri,"
+            elif day == "6":
+                prep += "sat,"
+            else:
+                prep += "sun,"
+    return prep
 
 
 @bp.route('/')
@@ -88,7 +113,6 @@ def routines_add():
                 is_active = 1
             if days[len(days) - 1] == ',':
                 days = days[:-1]
-            print(days)
             error = None
 
             if not label:
@@ -101,6 +125,8 @@ def routines_add():
                     conn.execute("INSERT INTO routine VALUES (NULL,?,?,?,?,?,?,?,?)",
                                  (label, device, days, hours, minutes, is_active, data, seconds))
                     conn.commit()
+                    conn.close()
+                    connect_cron()
                 except conn.IntegrityError:
                     error = f" Tato adresa již existuje "
                 else:
@@ -110,30 +136,6 @@ def routines_add():
         pass
 
     return render_template('routine/routineAdd.html', **template_data)
-
-
-def getDays(arr):
-    days = arr.split(",")
-    prep = ""
-    for day in days:
-        if day == "0":
-            return "*"
-        else:
-            if day == "1":
-                prep += "mon,"
-            elif day == "2":
-                prep += "tue,"
-            elif day == "3":
-                prep += "wed,"
-            elif day == "4":
-                prep += "thu,"
-            elif day == "5":
-                prep += "fri,"
-            elif day == "6":
-                prep += "sat,"
-            else:
-                prep += "sun,"
-    return prep
 
 
 @bp.route('/<int:id>/edit/', methods=("POST", "GET"))
@@ -153,41 +155,31 @@ def routines_edit(id):
             label = request.form['label']
             device = request.form.get('devices')
             data = request.form['data']
-            days = request.form.getlist('day')
+            days = getDays(request.form.get('days'))
             hours = request.form.get('hours')
             minutes = request.form.get('minutes')
             seconds = request.form.get('seconds')
             is_active = request.form.get('is_active')
-            days_final = ''
             if is_active is None:
                 is_active = 0
             else:
                 is_active = 1
-            if days[0] == '*':
-                days_final = '*'
-            else:
-                for day in days:
-                    days_final = days_final + day + ','
-            if days_final[len(days_final) - 1] == ',':
-                days_final = days_final[:-1]
-            print(device)
-            print(days_final)
+            if days[len(days) - 1] == ',':
+                days = days[:-1]
             error = None
 
             if not label:
                 error = 'Název služby chybí'
             if not data:
                 error = 'Data chybí'
-
-            print(error)
             if error is None:
                 try:
                     conn.execute(
                         "UPDATE routine SET label=?, device_id = ?, day_of_week = ?, hour = ?, minute = ?, is_active = ?, data = ?, second = ?  WHERE routine.id = ?",
-                        (label, device, days_final, hours, minutes, is_active, data, seconds, id))
+                        (label, device, days, hours, minutes, is_active, data, seconds, id))
                     conn.commit()
                     conn.close()
-                    print("asd")
+                    connect_cron()
                 except error:
                     error = "chyba při zapsání do Databáze"
                 else:

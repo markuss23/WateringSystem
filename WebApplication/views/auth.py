@@ -6,6 +6,7 @@ from flask import (
 from werkzeug.security import check_password_hash, generate_password_hash
 
 from WebApplication.views.db import get_db_connection
+from WebApplication.views.scheduler import connect_cron
 
 bp = Blueprint('auth', __name__, url_prefix='/auth')
 
@@ -99,7 +100,7 @@ def user_login():
         if error is None:
             session.clear()
             session['user_id'] = user['id']
-
+            connect_cron()
             return redirect('/')
         flash(error)
 

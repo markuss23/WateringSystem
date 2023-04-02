@@ -23,7 +23,11 @@
                                 <label class="form-check-label">Přiřazené zařízení</label>
                                 <select name="devices" class="form-control">
                                     {% for o in devices %}
-                                        <option value="{{ o.id }}">{{ o.label }}</option>
+                                        {% if o.id == routine.device_id %}
+                                            <option value="{{ o.id }}" selected>{{ o.label }}</option>
+                                        {% else %}
+                                            <option value="{{ o.id }}">{{ o.label }}</option>
+                                        {% endif %}
                                     {% endfor %}
                                 </select>
                             {% endif %}
@@ -32,51 +36,70 @@
                             <label for="data">Data</label>
                             <input name="data" id="data" class="form-control" required value="{{ routine.data }}">
                         </div>
-                        <div class="form-group h3">
-                            <label for="label">Každý den</label>
-                            <input type="checkbox" name="day" id="*" value="*">
-                            <label for="label">Pondělí</label>
-                            <input type="checkbox" name="day" id="mon" value="mon">
-                            <label for="label">Úterý</label>
-                            <input type="checkbox" name="day" id="tue" value="tue">
-                            <label for="label">Středa</label>
-                            <input type="checkbox" name="day" id="wed" value="wed">
-                            <label for="label">Čtvrtek</label>
-                            <input type="checkbox" name="day" id="thu" value="thu">
-                            <label for="label">Pátek</label>
-                            <input type="checkbox" name="day" id="fri" value="fri">
-                            <label for="label">Sobota</label>
-                            <input type="checkbox" name="day" id="sat" value="sat">
-                            <label for="label">Neděle</label>
-                            <input type="checkbox" name="day" id="sun" value="sun">
+                        <div class="form-group h5">
+                            <div id="weekdays" onclick="getIndexDays()"></div>
+                            <input type="hidden" value="" id="days" name="days">
                         </div>
                         <div class="form-group h3">
                             <label for="label">Čas</label>
                             <select name="hours" id="hours">
-                                <option value="*">Každou hodinu</option>
-                                <option value="">Neuvedeno</option>
-                                <option value="0">0</option>
-                                <option value="1">1</option>
-                                <option value="2">2</option>
-                                <option value="3">3</option>
+                                {% if routine.hour == "" %}
+                                    <option value="" selected>Neuvedeno</option>
+                                {% else %}
+                                    <option value="">Neuvedeno</option>
+                                {% endif %}
+                                {% if routine.hour == "*" %}
+                                    <option value="*" selected>Každou hodinu</option>
+                                {% else %}
+                                    <option value="*">Každou hodinu</option>
+                                {% endif %}
+                                {% for i in range(0, 24) %}
+                                    {% if i|string == routine.hour|string %}
+                                        <option value="{{ i }}" selected>{{ i }}</option>
+                                    {% else %}
+                                        <option value="{{ i }}">{{ i }}</option>
+                                    {% endif %}
+                                {% endfor %}
                             </select>
                             :
                             <select name="minutes" id="minutes">
-                                <option value="*">Každou minutu</option>
-                                <option value="">Neuvedeno</option>
-                                <option value="0">0</option>
-                                <option value="5">5</option>
-                                <option value="10">10</option>
-                                <option value="15">15</option>
+                                {% if routine.minute == "" %}
+                                    <option value="" selected>Neuvedeno</option>
+                                {% else %}
+                                    <option value="">Neuvedeno</option>
+                                {% endif %}
+                                {% if routine.minute == "*" %}
+                                    <option value="*" selected>Každou minutu</option>
+                                {% else %}
+                                    <option value="*">Každou minutu</option>
+                                {% endif %}
+                                {% for i in range(0, 61) %}
+                                    {% if i|string == routine.minute|string %}
+                                        <option value="{{ i }}" selected>{{ i }}</option>
+                                    {% else %}
+                                        <option value="{{ i }}">{{ i }}</option>
+                                    {% endif %}
+                                {% endfor %}
                             </select>
                             :
                             <select name="seconds" id="seconds">
-                                <option value="*">Každou sekundu</option>
-                                <option value="">Neuvedeno</option>
-                                <option value="0">0</option>
-                                <option value="1">1</option>
-                                <option value="2">2</option>
-                                <option value="3">3</option>
+                                {% if routine.second == "" %}
+                                    <option value="" selected>Neuvedeno</option>
+                                {% else %}
+                                    <option value="">Neuvedeno</option>
+                                {% endif %}
+                                {% if routine.second == "*" %}
+                                    <option value="*" selected>Každou sekundu</option>
+                                {% else %}
+                                    <option value="*">Každou sekundu</option>
+                                {% endif %}
+                                {% for i in range(0, 61) %}
+                                    {% if i|string == routine.second|string %}
+                                        <option value="{{ i }}" selected>{{ i }}</option>
+                                    {% else %}
+                                        <option value="{{ i }}">{{ i }}</option>
+                                    {% endif %}
+                                {% endfor %}
                             </select>
                         </div>
                         <div class="form-group form-check h3">
@@ -87,9 +110,6 @@
                             {% endif %}
                             <label class="form-check-label">Aktivní</label>
                         </div>
-
-
-
                         <button class="p-3 mr-3 px-4 py-3 btn btn-warning float-right">Upravit</button>
                     {% endfor %}
                 {% endif %}
@@ -99,5 +119,20 @@
     {% for message in get_flashed_messages() %}
         <div class="flash">{{ message }}</div>
     {% endfor %}
+    <script>
+        $(function () {
+            $('#weekdays').weekdays({
+                days: ["Každý den", "Pondělí", "Úterý", "Středa", "Čtvrtej", "Pátek", "Sobota", "Neděle"]
+            });
+        });
+        function getIndexDays() {
+            let indexes = $('#weekdays').selectedIndexes();
+            let array = [];
+            for (const index of indexes) {
+                array.push(index);
+            }
+            $('#days').val(array);
+        }
 
+    </script>
 {% endblock %}
