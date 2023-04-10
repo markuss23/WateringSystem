@@ -85,17 +85,4 @@
             </a>
         {% endfor %}
     {% endif %}
-    <div class="mt-5"></div>
-    <div class="square square-scenes mt-2"></div><h2 class=" ml-5">Přiřazeno pro scénu</h2>
-    <hr/>
-    {% if scenes %}
-        {% for scene in scenes %}
-            <a href="{{ url_for('scenes.scene',id = scene.id) }}">
-                <div class="col-lg-12 bg-components my-3 p-4 h3 bg-scenes link-brown">
-                    {{ scene.label }}
-                </div>
-            </a>
-        {% endfor %}
-    {% endif %}
-
 {% endblock %}

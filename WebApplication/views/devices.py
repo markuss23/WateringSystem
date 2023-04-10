@@ -33,6 +33,7 @@ def device(id):
         'devices': False,
         'scenes': False,
         'types': False,
+        'routines': False
     }
     try:
         conn = get_db_connection()
@@ -48,9 +49,14 @@ def device(id):
             "select * from type inner join device d on type.id = d.type_id where d.id = ?",
             (id,)).fetchall()
 
+        routines = conn.execute(
+            "select id, label from routine where device_id = ? and is_active=1",
+            (id,)).fetchall()
+
         template_data['devices'] = devices
         template_data['scenes'] = scenes
         template_data['types'] = types
+        template_data['routines'] = routines
     except:
         pass
 

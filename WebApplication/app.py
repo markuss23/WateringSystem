@@ -20,7 +20,7 @@ app.config['SESSION_TYPE'] = 'mqtt_session'
 app.config['MQTT_BROKER_URL'] = broker_address
 app.config['MQTT_BROKER_PORT'] = 1883
 app.config['MQTT_CLIENT_ID'] = 'flask_mqtt'
-app.config['MQTT_KEEPALIVE'] = 60
+app.config['MQTT_KEEPALIVE'] = 30
 app.debug = False
 mqtt = Mqtt(app)
 socketio = SocketIO(app)
@@ -36,7 +36,6 @@ def handle_publish(json_str):
 
 @socketio.on('subscribe')
 def handle_subscribe(json_str):
-    print('prihlaseno')
     data = json.loads(json_str)
     mqtt.subscribe(data['topic'], data['qos'])
 

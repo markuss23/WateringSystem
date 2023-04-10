@@ -5,6 +5,19 @@ import paho.mqtt.client as Mqtt
 from WebApplication.views.mqtt_connector import get_broker
 
 mqtt = Mqtt.Client()
+
+
+def on_connect(client, userdata, flags, rc):
+    print("Connected with result code " + str(rc))
+
+
+def on_disconnect(client, userdata, rc):
+    print("Disconnected with result code " + str(rc))
+
+
+mqtt.on_connect = on_connect
+mqtt.on_disconnect = on_disconnect
+
 mqtt.connect(get_broker(), 1883)
 
 
@@ -22,6 +35,7 @@ def send_mqtt_message(job, topic):
 
 
 def run_job(job, topic):
+    print("běžím")
     send_mqtt_message(job, topic)
 
 
@@ -82,6 +96,8 @@ def connect_cron():
                     second=job[7],
                     args=[job, topic]
                 )
+        print("startuji")
         scheduler.start()
+        mqtt.loop_forever()
     except:
         pass
