@@ -39,7 +39,12 @@
                                 <label class="form-check-label">Typ</label>
                                 <select name="types" class="form-control">
                                     {% for o in types %}
-                                        <option value="{{ o.id }}">{{ o.label }}</option>
+                                        {% if o.id == data.type_id %}
+                                            <option value="{{ o.id }}" selected>{{ o.label }}</option>
+                                        {% else %}
+                                            <option value="{{ o.id }}">{{ o.label }}</option>
+                                        {% endif %}
+
                                     {% endfor %}
                                 </select>
                             {% endif %}
